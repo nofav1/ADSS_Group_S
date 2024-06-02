@@ -39,4 +39,12 @@ public class Constraint {
                 ", currShift=" + currShift +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        return currShift.equals(((Constraint) obj).currShift) &&
+                shiftType == ((Constraint) obj).shiftType &&
+                currWorker.equals(((Constraint) obj).currWorker);
+    }
 }

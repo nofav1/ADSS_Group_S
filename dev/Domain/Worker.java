@@ -94,13 +94,17 @@ public class Worker {
         isActive = active;
     }
 
-    // Other methods...
+    public int getID() {
+        return ID;
+    }
+// Other methods...
 
     // Add New Role To Worker
     public void addRole(Role role) {
         // Each role only once.
         if (role != null && !roles.contains(role)) this.roles.add(role);
     }
+
     // Removes Existing Role To Worker
     public void removeRole(Role role) {
         if (role != null && roles.contains(role)) {
@@ -108,5 +112,10 @@ public class Worker {
         }
     }
 
-
+    // Equals by ID
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof Worker workerObj)) return false;
+        return this.ID == ((Worker) workerObj).ID;
+    }
 }
