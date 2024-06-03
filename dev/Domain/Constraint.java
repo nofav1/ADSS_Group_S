@@ -1,24 +1,25 @@
 package Domain;
 
 public class Constraint {
-    private Worker currWorker;
-    private Shift currShift;
-    private int shiftType;
+    private final Worker currWorker;
+    private final Shift currShift;
+    private Shift.sTypes shiftType;
 
 
     // Constructor
     public Constraint(Worker currWorker, Shift currShift) {
         this.currWorker = currWorker;
         this.currShift = currShift;
+        // No shift type here, because it can be none.
     }
 
 
     // Getters & Setters
-    public void setShiftType(int shiftType) {
+    public void setShiftType(Shift.sTypes shiftType) {
         this.shiftType = shiftType;
     }
 
-    public int getShiftType() {
+    public Shift.sTypes getShiftType() {
         return shiftType;
     }
 

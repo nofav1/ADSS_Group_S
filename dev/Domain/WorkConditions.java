@@ -1,22 +1,23 @@
 package Domain;
 
 public class WorkConditions {
-    Date startDate;
+    SystemDate startDate;
     Worker directManager;
-    private String workType;
-    private String department;
+    private java.lang.String workType;
+    private java.lang.String department;
     private int salary;
     private int globalSalary; // TODO : NEEDED?
 
 
     // Constructor
-    public WorkConditions(Date startDate, Worker directManager, String workType, String department, int salary, int globalSalary) {
-        this.startDate = startDate;
+    public WorkConditions() {
+       // TODO: CHANGE IT
+    /*    this.startDate = startDate;
         this.directManager = directManager;
         this.workType = workType;
         this.department = department;
         this.salary = salary;
-        this.globalSalary = globalSalary;
+        this.globalSalary = globalSalary;*/
     }
 
     // Getters & Setters
@@ -28,19 +29,19 @@ public class WorkConditions {
         this.directManager = directManager;
     }
 
-    public String getWorkType() {
+    public java.lang.String getWorkType() {
         return workType;
     }
 
-    public void setWorkType(String workType) {
+    public void setWorkType(java.lang.String workType) {
         this.workType = workType;
     }
 
-    public String getDepartment() {
+    public java.lang.String getDepartment() {
         return department;
     }
 
-    public void setDepartment(String department) {
+    public void setDepartment(java.lang.String department) {
         this.department = department;
     }
 
@@ -61,7 +62,7 @@ public class WorkConditions {
     }
 
     @Override
-    public String toString() {
+    public java.lang.String toString() {
         return "WorkConditions{" +
                 "startDate=" + startDate +
                 ", directManager=" + directManager +

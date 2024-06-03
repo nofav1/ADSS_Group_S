@@ -1,17 +1,17 @@
 package Domain;
 
 public class Notification {
-    private String message;
+    private SystemDate message;
 
-    public Notification(String message) {
+    public Notification(SystemDate message) {
         this.message = message;
     }
 
-    public String getMessage() {
+    public SystemDate getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(SystemDate message) {
         this.message = message;
     }
 }

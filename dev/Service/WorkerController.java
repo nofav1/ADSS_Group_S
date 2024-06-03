@@ -9,6 +9,7 @@ import java.util.List;
 
 public class WorkerController {
     Dao workersDao;
+    Worker currWorker;
 
     public WorkerController() {
         workersDao = WorkerDao.getInstance();
@@ -18,7 +19,7 @@ public class WorkerController {
     public Worker getWorker(int id) {
         // no problem with casting in runtime.
         Worker resultWorker = null;
-        for (Worker worker :(List<Worker>) workersDao.getAll()) {
+        for (Worker worker : new ArrayList<Worker>(workersDao.getAll().values())) {
             // Same ID? return the worker.
             if (worker.getID() == id) resultWorker = worker;
         }
@@ -26,9 +27,10 @@ public class WorkerController {
         return resultWorker;
     }
 
+
     // get all workers list.
     public List<Worker> getAllWorkers() {
-        return workersDao.getAll();
+        return (List<Worker>) workersDao.getAll().values().stream().toList();
     }    // get all workers list.
 
 

@@ -2,12 +2,14 @@ package DataAccess;
 
 import Domain.Worker;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public interface Dao<T> {
 
     // get all Objects as List
-    List<T> getAll();
+    HashMap<String,T> getAll();
 
     // get specific object
 //    T getObj(String obj);

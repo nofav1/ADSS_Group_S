@@ -1,18 +1,20 @@
 package Domain;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.lang.String;
 
 public class Shift {
     // enum of shiftType
-    private enum sTypes {Morning, Evening}
+    public enum sTypes {Morning, Evening}
 
-    ArrayList<Constraint> constraints;
+    List<Constraint> constraints;
     Worker shiftManager;
     boolean isActive;
-    Date shiftDate;
+    String shiftDate;
 
     // Constructor
-    public Shift(Date shiftDate) {
+    public Shift(String shiftDate) {
         // init the List
         this.constraints = new ArrayList<>();
         this.shiftDate = shiftDate;
@@ -23,7 +25,9 @@ public class Shift {
     }
 
     // Getters & Setters
-    public ArrayList<Constraint> getConstraints() {
+
+
+    public List<Constraint> getConstraints() {
         return constraints;
     }
 
@@ -43,7 +47,7 @@ public class Shift {
         isActive = active;
     }
 
-    public Date getShiftDate() {
+    public String getShiftDate() {
         return shiftDate;
     }
 
