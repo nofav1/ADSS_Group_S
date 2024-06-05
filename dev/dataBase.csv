@@ -1,0 +1,65 @@
+﻿151,Samsung Galaxy S21,31/12/2024,wareHouse,A5,12345,Electronics,Mobile,10,199.99,3,7,Samsung,20,15
+152,Philips Blender,15/01/2025,wareHouse,B6,67890,Home,Kitchen,5,49.99,7,10,Philips,10,5
+153,Neutrogena Face Wash,20/11/2024,interiorStore,A5,13579,Beauty,Skincare,2,19.99,4,5,Neutrogena,5,2
+154,LEGO Mindstorms,10/06/2025,wareHouse,B7,24680,Toys,Educational,1,29.99,6,15,LEGO,15,10
+155,Coca-Cola Classic,12/08/2023,wareHouse,C4,98765,Groceries,Beverages,3,2.99,2,2,Coca-Cola,8,4
+156,Dell XPS 13,28/02/2024,interiorStore,A6,54321,Electronics,Laptop,14,899.99,9,14,Dell,30,25
+157,Nike Air Max,10/03/2025,wareHouse,C5,13524,Fashion,Men,42,79.99,8,12,Nike,18,9
+158,IKEA Bookshelf,31/12/2023,interiorStore,B8,24631,Home,Furniture,50,199.99,7,20,IKEA,22,17
+159,Bosch Spark Plugs,15/07/2024,interiorStore,D3,36912,Automotive,Parts,7,12.99,1,6,Bosch,12,7
+160,L'Oreal Lipstick,11/11/2023,interiorStore,E4,48302,Beauty,Makeup,1,25.99,3,3,L'Oreal,9,3
+161,Adidas Soccer Ball,20/05/2024,interiorStore,A7,55555,Sports,Equipment,5,149.99,4,8,Adidas,25,18
+162,Green Giant Peas,25/01/2024,wareHouse,B9,66666,Groceries,Frozen,2,5.99,5,4,Green Giant,14,8
+163,Zara Dress,05/04/2025,interiorStore,C6,77777,Fashion,Women,38,89.99,6,11,Zara,20,15
+164,Canon DSLR,20/09/2023,interiorStore,D4,88888,Electronics,Camera,8,599.99,4,13,Canon,28,24
+165,Hasbro Monopoly,10/10/2024,interiorStore,E5,99999,Toys,Action,6,14.99,2,7,Hasbro,10,6
+166,Home Depot Lamp,08/08/2024,wareHouse,F2,11223,Home,Decor,3,9.99,3,5,Home Depot,11,8
+167,Michelin Car Mat,25/12/2025,wareHouse,G3,22334,Automotive,Accessories,12,19.99,7,9,Michelin,13,7
+168,Dove Shampoo,07/07/2023,wareHouse,H4,33445,Beauty,Haircare,1,15.99,2,4,Dove,7,3
+169,Puma Running Shoes,15/06/2024,wareHouse,I2,44556,Sports,Apparel,36,49.99,9,10,Puma,21,13
+170,Carter's Baby Onesie,18/04/2024,wareHouse,J3,55667,Fashion,Kids,10,29.99,8,6,Carter's,8,5
+171,Lays Potato Chips,03/03/2024,wareHouse,K2,66778,Groceries,Snacks,2,3.99,5,2,Lays,12,6
+172,Black+Decker Drill,02/02/2024,interiorStore,L4,77889,Home,Tools,15,49.99,9,12,Black+Decker,19,11
+173,Sony Bravia TV,01/01/2025,wareHouse,M7,88990,Electronics,TV,55,1299.99,2,18,Sony,30,27
+174,Chanel Perfume,11/11/2024,wareHouse,N3,99001,Beauty,Fragrance,1,59.99,7,7,Chanel,6,3
+175,Reebok Classic Sneakers,20/10/2023,interiorStore,O4,10101,Sports,Footwear,9,99.99,8,5,Reebok,16,8
+176,Dannon Yogurt,09/09/2024,wareHouse,P5,20202,Groceries,Dairy,1,1.99,3,3,Dannon,5,2
+177,Ray-Ban Sunglasses,08/08/2025,wareHouse,Q4,30303,Fashion,Accessories,0,19.99,6,8,Ray-Ban,14,9
+178,Philips LED Bulb,07/07/2024,interiorStore,R3,40404,Home,Lighting,7,14.99,8,6,Philips,10,5
+179,Castrol Engine Oil,06/06/2024,wareHouse,S4,50505,Automotive,Oils,5,9.99,7,7,Castrol,9,4
+180,OPI Nail Polish,05/05/2024,interiorStore,T2,60606,Beauty,Nails,1,7.99,2,4,OPI,6,3
+181,Bose Home Speaker,04/04/2024,interiorStore,U3,70707,Electronics,Speakers,2,199.99,5,9,Bose,25,20
+182,Pillsbury Dough,03/03/2024,interiorStore,V2,80808,Groceries,Bakery,1,2.49,1,2,Pillsbury,10,5
+183,Lysol Disinfectant,02/02/2024,interiorStore,W4,90909,Home,Cleaning,3,5.99,7,4,Lysol,12,8
+184,Cartier Necklace,01/01/2024,wareHouse,X3,1010,Fashion,Jewelry,0,299.99,3,20,Cartier,5,3
+185,Apple iPad,12/12/2023,interiorStore,Y4,11111,Electronics,Tablet,8,399.99,9,12,Apple,20,15
+186,Goodyear Tire,11/11/2023,interiorStore,Z2,21212,Automotive,Tires,4,79.99,7,11,Goodyear,12,7
+187,NordicTrack Treadmill,10/10/2023,interiorStore,A6,31313,Sports,Gym,20,499.99,1,14,NordicTrack,18,14
+188,The Body Shop Lotion,09/09/2024,wareHouse,B7,41414,Beauty,Body,3,24.99,4,6,The Body Shop,7,3
+189,Tyson Chicken,08/08/2024,wareHouse,C8,51515,Groceries,Meat,1,8.99,6,5,Tyson,10,4
+190,Fiskars Garden Shears,07/07/2024,wareHouse,D6,61616,Home,Garden,7,14.99,3,9,Fiskars,13,9
+191,Sennheiser Headphones,06/06/2024,wareHouse,E9,71717,Electronics,Audio,2,299.99,4,10,Sennheiser,20,16
+192,North Face Jacket,05/05/2024,wareHouse,F7,81818,Fashion,Outerwear,40,199.99,6,8,North Face,22,17
+193,Pioneer Car Stereo,04/04/2024,wareHouse,G4,91919,Automotive,Electronics,6,129.99,3,7,Pioneer,10,6
+194,Kitchenaid Mixer,03/03/2024,interiorStore,H5,2020,Home,Appliances,12,79.99,1,12,Kitchenaid,15,10
+195,Clinique Moisturizer,02/02/2024,wareHouse,I3,12121,Beauty,Skincare,2,14.99,5,3,Clinique,8,4
+196,Asics Running Shoes,01/01/2024,wareHouse,J4,22222,Sports,Footwear,9,79.99,8,9,Asics,18,12
+197,General Mills Cereal,12/12/2023,interiorStore,K6,32323,Groceries,Breakfast,1,4.99,2,2,General Mills,5,2
+198,BaByliss Hair Dryer,11/11/2023,wareHouse,L8,42424,Beauty,Haircare,3,29.99,7,6,BaByliss,7,5
+199,Apple MacBook Air,10/10/2023,wareHouse,M4,52525,Electronics,Laptop,13,999.99,3,15,Apple,28,22
+200,Garnier Face Mask,09/09/2023,interiorStore,N5,62626,Beauty,Skincare,1,3.99,1,4,Garnier,6,3
+201,Samsung Galaxy S22,31/12/2024,wareHouse,A5,12345,Electronics,Mobile,10,199.99,3,7,Samsung,20,15
+202,Philips Hand Mixer,15/01/2025,interiorStore,B6,67890,Home,Kitchen,5,49.99,8,10,Philips,10,5
+203,Neutrogena Sunscreen,20/11/2024,interiorStore,A5,13579,Beauty,Skincare,2,19.99,5,5,Neutrogena,5,2
+204,LEGO Technic,10/06/2025,interiorStore,B7,24680,Toys,Educational,1,29.99,7,15,LEGO,15,10
+205,Pepsi,12/08/2023,interiorStore,C4,98765,Groceries,Beverages,3,2.99,3,2,Pepsi,8,4
+206,Dell Inspiron,28/02/2024,wareHouse,A6,54321,Electronics,Laptop,14,899.99,6,14,Dell,30,25
+207,Nike Running Shoes,10/03/2025,interiorStore,C5,13524,Fashion,Men,42,79.99,2,12,Nike,18,9
+208,IKEA Chair,31/12/2023,interiorStore,B8,24631,Home,Furniture,50,199.99,4,20,IKEA,22,17
+209,Bosch Wipers,15/07/2024,interiorStore,D3,36912,Automotive,Parts,7,12.99,6,6,Bosch,12,7
+210,L'Oreal Foundation,11/11/2023,wareHouse,E4,48302,Beauty,Makeup,1,25.99,7,3,L'Oreal,9,3
+211,Samsung Galaxy S24,31/12/2024,wareHouse,A5,12345,Electronics,Mobile,10,199.99,3,7,Samsung,20,15
+212,Samsung Galaxy S25,31/12/2024,wareHouse,A5,12345,Electronics,Mobile,10,199.99,3,7,Samsung,20,15
+213,Samsung Galaxy S26,31/12/2024,wareHouse,A5,12345,Electronics,Mobile,10,199.99,3,7,Samsung,20,15
+214,Samsung Galaxy S27,31/12/2024,wareHouse,A5,12345,Electronics,Mobile,10,199.99,3,7,Samsung,20,15
+215,Samsung Galaxy S28,31/12/2024,wareHouse,A5,12345,Electronics,Mobile,10,199.99,3,7,Samsung,20,15

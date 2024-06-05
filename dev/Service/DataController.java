@@ -5,37 +5,26 @@ import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class DataController {
-    //private List<Product> products;
-    private HashMap<Integer,Product> products; //saves all current products in store
+    private HashMap<Integer,Product> products; //saves all current products in store. Key: product ID, Value: object Product
     private HashMap<Integer,Product> purchaseProducts; //saves all the purchase products
-
-    private HashMap<String, HashMap<String, HashMap<String, HashMap<String, Integer>>>> productsAmountMapByCategory; //saves all products amount in format: Map<category, Map<sub-category,Map<size, Map<location, amount>>>>
-
-    //private HashMap<String, HashMap<String, Integer>> productsAmountMapBySubCategory;
-
-    //private HashMap<String, Integer> productsAmountMapBySize;
-
+    private HashMap<String, HashMap<String, HashMap<String, HashMap<String, Integer>>>> productsAmountMapByCategory; //saves all products amount in format: Map<category, Map<sub-category,Map<size, Map<location, amount>>>> (location- wareHouse, interiorStore)
+    private Set<Integer> catalogNumSet; //saves all the catalogs number we have in store
 
     public DataController(){
         products = new HashMap<>();
         purchaseProducts = new HashMap<>();
         productsAmountMapByCategory = new HashMap<>();
-        //productsAmountMapBySubCategory = new HashMap<>();
-        //productsAmountMapBySize = new HashMap<>();
+        catalogNumSet = new HashSet<>();
     }
-    public void ImportData(){
+    public void ImportData(String path){
         // import CSV file path
-        String csvFilePath = "C:\\Users\\nofar\\OneDrive - post.bgu.ac.il\\semester D\\analysis and design of software systems\\nitutz_project\\ADSS_Group_S\\dev\\dataBase.csv";
 
-        try (CSVReader reader = new CSVReader(new FileReader(csvFilePath))) {
+        try (CSVReader reader = new CSVReader(new FileReader(path))) {
             String[] nextRecord; //array: int pID, String pName, String pExpD, String pLoc, String pSection, int pCatalogNum,String pCategory, String pSubCategory, int pSize, double pCost, int pDemand, int pSupplyTime,int pMinAmountForAlert, String pManufacturer, int pSupplierDis, int pStoreDis
             while ((nextRecord = reader.readNext()) != null) { //reading record by record
-                System.out.println(nextRecord[0]+" , "+nextRecord[1]+" , "+nextRecord[2]+" , "+nextRecord[3]+" , "+nextRecord[4]+" , "+nextRecord[5]+" , "+nextRecord[6]+" , "+nextRecord[7]+" , "+nextRecord[8]+" , "+nextRecord[9]+" , "+nextRecord[10]+" , "+nextRecord[11]+" , "+nextRecord[12]+" , "+nextRecord[13]+" , "+nextRecord[14]+" , "+nextRecord[15]);
                 Product product = new Product();
                 String inputID = nextRecord[0];
                 if (inputID.startsWith("\uFEFF")) { //remove useless chars from csv file
@@ -44,6 +33,7 @@ public class DataController {
                 inputID = inputID.trim();
                 nextRecord[0] = inputID;
                 setProductDetails(product, nextRecord); //build product
+                catalogNumSet.add(product.getC().getCatalogNum()); //add catalog number to catalog set
                 products.put(product.getId(), product);
 
                 //add to productsAmountMap
@@ -53,21 +43,6 @@ public class DataController {
                 String location = product.getStored(); //interiorStore or wareHouse
 
                 changeProductToCountMap(true, category, subCategory,size, location);
-                /*// Check if category exists
-                if (!productsAmountMapByCategory.containsKey(category)) {
-                    productsAmountMapByCategory.put(category, new HashMap<>());
-                }
-
-                // Check if subCategory exists
-                HashMap<String, HashMap<String, Integer>> subCategoryMap = productsAmountMapByCategory.get(category);
-                if (!subCategoryMap.containsKey(subCategory)) {
-                    subCategoryMap.put(subCategory, new HashMap<>());
-                }
-
-                // Check if size exists and update value
-                HashMap<String, Integer> sizeMap = subCategoryMap.get(subCategory);
-                sizeMap.put(size, sizeMap.getOrDefault(size, 0) + 1);*/
-
 
             }
         } catch (IOException e) {
@@ -76,8 +51,6 @@ public class DataController {
             throw new RuntimeException(e);
         }
 
-        System.out.println("SHOW PRODUCTS SIZE LIST: ");
-        System.out.println(products.size());
     }
 
     //add = true : increment by 1 in the catalog product location in the hash map
@@ -103,6 +76,12 @@ public class DataController {
         HashMap<String, Integer> locMap = sizeMap.get(size);
         if(add) { //increment
             locMap.put(location, locMap.getOrDefault(location, 0) + 1);
+            if(location.equals("wareHouse")){
+                locMap.put("interiorStore",0); //initiate interior store with 0
+            }
+            else{
+                locMap.put("wareHouse",0); //initiate wareHouse with 0
+            }
         }
         else{ //decrement
             locMap.put(location, locMap.getOrDefault(location, 0) - 1);
@@ -123,29 +102,51 @@ public class DataController {
         classification.setCostPrice(Double.parseDouble(details[9]));
         classification.setDemand(Integer.parseInt(details[10]));
         classification.setSupplyTime(Integer.parseInt(details[11]));
-        classification.setMinAmountForAlert(Integer.parseInt(details[12]));
-        classification.setManufacturer(details[13]);
-        classification.setSupplierDis(Integer.parseInt(details[14]));
-        classification.setStoreDis(Integer.parseInt(details[15]));
+        classification.setMinAmountForAlert((int)(0.5*classification.getDemand() + 0.5*classification.getSupplyTime()));
+        classification.setManufacturer(details[12]);
+        classification.setSupplierDis(Integer.parseInt(details[13]));
+        classification.setStoreDis(Integer.parseInt(details[14]));
 
         product.setC(classification);
     }
-    public void addProductController(String productDetails){
+
+    //return true - when product is valid and added to dataBase.
+    //return false - the product's catalog number is wrong
+    public boolean addProductController(String productDetails) {
         Product product = new Product();
         String[] detailsArray = productDetails.split(",");
         setProductDetails(product, detailsArray);
-        products.put(product.getId(), product);
+        //checks that catalog number is valid
+        if (productsAmountMapByCategory.containsKey(product.getC().getCategory()) &&
+            productsAmountMapByCategory.get(product.getC().getCategory()).containsKey(product.getC().getSubcategory()) &&
+                productsAmountMapByCategory.get(product.getC().getCategory()).get(product.getC().getSubcategory()).containsKey(String.valueOf(product.getC().getSize()))) {
 
-        changeProductToCountMap(true, product.getC().getCategory(), product.getC().getSubcategory(), String.valueOf(product.getC().getSize()), product.getStored());
-
-        System.out.println(products.size()); //dont forget to delete
+            if (catalogNumSet.contains(product.getC().getCatalogNum())) { //checks if catalog number is exist
+                products.put(product.getId(), product);
+                changeProductToCountMap(true, product.getC().getCategory(), product.getC().getSubcategory(), String.valueOf(product.getC().getSize()), product.getStored());
+                return true;
+            }
+            else{ //catalog number is wrong
+                return false;
+            }
+        }
+        else{ //new kind of product
+            if(!catalogNumSet.contains(product.getC().getCatalogNum())){ //if catalog number is not exist in set, add product
+                products.put(product.getId(), product);
+                changeProductToCountMap(true, product.getC().getCategory(), product.getC().getSubcategory(), String.valueOf(product.getC().getSize()), product.getStored());
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
     }
 
     public void markDefect(int productID){
         products.get(productID).setDefect(true);
     }
 
-    public void handlePurchaseProduct(int productID, int salePrice){
+    public void handlePurchaseProduct(int productID, double salePrice){
         Product p = products.get(productID);
         purchaseProducts.put(productID, p);
         purchaseProducts.get(productID).getC().setSalePrice(salePrice);
@@ -159,7 +160,7 @@ public class DataController {
         changeProductToCountMap(false,p.getC().getCategory(), p.getC().getSubcategory(), String.valueOf(p.getC().getSize()), p.getStored()); //decrement by 1 in categories map
     }
 
-    public void updatePriceController(int productID, int newPrice){
+    public void updatePriceController(int productID, double newPrice){
         products.get(productID).getC().setCostPrice(newPrice);
     }
 
@@ -176,19 +177,6 @@ public class DataController {
         return defectReport;
     }
 
-    /*//returns the total products amount. (with no categories independent)
-    //amounts[0] - All products in store
-    //amounts[1] - All products in the inner store
-    //amounts[2] - All products in the warehouse
-    public int[] getTotalProductsAmount(){
-        int[] amounts = new int[3];
-        amounts[0] = this.products.size(); //total amount
-        int[] amountResults = helperGetTotalProductsAmount(null);
-        amounts[1] = amountResults[0];
-        amounts[2] = amountResults[1];
-        return amounts;
-    }*/
-
     public String inventoryReportController(String[] categories){
         String report = "";
         // Iterate over the keys of the top-level map (categories)
@@ -204,7 +192,64 @@ public class DataController {
             }
             System.out.println("----------------------------------------------------------");
         }
-
         return report;
+    }
+
+    public String productsIDdetails(int productID){
+        String details = "";
+        Product p = products.get(productID);
+        details = "Product ID: " + p.getId() + ", Name: " + p.getName() + "\n" + "Expiring Date: " + p.getExpiring_date() + "\nLocation: "
+                + p.getStored() + ", Section: " + p.getSection() + "\nCatalog Number: "
+                + p.getC().getCatalogNum() + ", Category: " + p.getC().getCategory() + ", Sub-Category: " + p.getC().getSubcategory() +
+                ", Size: " + p.getC().getSize() + "\nCost: "
+                + p.getC().getCostPrice() + "\nDemand: " + p.getC().getDemand() + "\nSupplyTime: " + p.getC().getSupplyTime() +
+                "\nMinimun Time For Alert: " + p.getC().getMinAmountForAlert() + "\nManufacturer: "
+                + p.getC().getManufacturer() + "\nSupplier Discount: " + p.getC().getSupplierDis() + "\nStore Discount: " + p.getC().getStoreDis() + "\n";
+
+        return details;
+    }
+
+    public boolean checkForAlert(int productID){
+        Product p = products.get(productID);
+        int wAmount = productsAmountMapByCategory.get(p.getC().getCategory()).get(p.getC().getSubcategory()).get(String.valueOf(p.getC().getSize())).get("wareHouse");
+        int interiorAmount = productsAmountMapByCategory.get(p.getC().getCategory()).get(p.getC().getSubcategory()).get(String.valueOf(p.getC().getSize())).get("interiorStore");
+        int currentAmount = wAmount + interiorAmount - 1; //remove current product from amount
+        if(currentAmount <= p.getC().getMinAmountForAlert()){
+            return true;
+        }
+        return false;
+    }
+
+    public String getProductName(int productID){
+        return products.get(productID).getName();
+    }
+
+    public void setDiscountForCategory(String category, int discount){
+        for(Product p : products.values()){
+            if(p.getC().getCategory().equals(category)){
+                p.getC().setStoreDis(discount);
+            }
+        }
+    }
+
+    public void setDiscountForSubCategory(String sub_category, int discount){
+        for(Product p : products.values()){
+            if(p.getC().getSubcategory().equals(sub_category)){
+                p.getC().setStoreDis(discount);
+            }
+        }
+    }
+
+    public void setDiscountForCatalogNum(int cNum, int discount){
+        for(Product p : products.values()){
+            if(p.getC().getCatalogNum() == cNum){
+                p.getC().setStoreDis(discount);
+            }
+        }
+    }
+
+    public double getProductPurchasePrice(int productID){
+        Product p = purchaseProducts.get(productID);
+        return purchaseProducts.get(productID).getC().getSalePrice();
     }
 }
