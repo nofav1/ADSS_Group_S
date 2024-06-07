@@ -1,4 +1,4 @@
-# ADSS_Group_S# ADSS_Group_S :
+# ADSS_Group_S :
 ## Worker module of supermarket system. 
 ____
 
