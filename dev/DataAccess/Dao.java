@@ -1,15 +1,11 @@
 package DataAccess;
 
-import Domain.Worker;
-
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 
 public interface Dao<T> {
 
     // get all Objects as List
-    HashMap<String,T> getAll();
+    HashMap<String, T> getAll();
 
     // get specific object
 //    T getObj(String obj);
@@ -22,5 +18,7 @@ public interface Dao<T> {
 
     // delete in DB
     void delete(T t);
+
+    void addFakeData();
 }
 

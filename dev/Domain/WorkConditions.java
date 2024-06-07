@@ -1,75 +1,54 @@
 package Domain;
 
 public class WorkConditions {
-    SystemDate startDate;
-    Worker directManager;
-    private java.lang.String workType;
-    private java.lang.String department;
-    private int salary;
-    private int globalSalary; // TODO : NEEDED?
+    String startDate;
+    String directManager;
+    private String workType;
+    private double salary;
 
 
     // Constructor
-    public WorkConditions() {
-       // TODO: CHANGE IT
-    /*    this.startDate = startDate;
+    public WorkConditions( String startDate, String directManager, String workType, double salary) {
+        // TODO: CHANGE IT
+        this.startDate = startDate;
         this.directManager = directManager;
         this.workType = workType;
-        this.department = department;
         this.salary = salary;
-        this.globalSalary = globalSalary;*/
     }
 
     // Getters & Setters
-    public Worker getDirectManager() {
+    public String getDirectManager() {
         return directManager;
     }
 
-    public void setDirectManager(Worker directManager) {
+    public void setDirectManager(String directManager) {
         this.directManager = directManager;
     }
 
-    public java.lang.String getWorkType() {
+    public String getWorkType() {
         return workType;
     }
 
-    public void setWorkType(java.lang.String workType) {
+    public void setWorkType(String workType) {
         this.workType = workType;
     }
 
-    public java.lang.String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(java.lang.String department) {
-        this.department = department;
-    }
-
-    public int getSalary() {
+    public double getSalary() {
         return salary;
     }
 
-    public void setSalary(int salary) {
+    public void setSalary(double salary) {
         this.salary = salary;
     }
 
-    public int getGlobalSalary() {
-        return globalSalary;
-    }
-
-    public void setGlobalSalary(int globalSalary) {
-        this.globalSalary = globalSalary;
-    }
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return "WorkConditions{" +
                 "startDate=" + startDate +
                 ", directManager=" + directManager +
                 ", workType='" + workType + '\'' +
-                ", department='" + department + '\'' +
                 ", salary=" + salary +
-                ", globalSalary=" + globalSalary +
                 '}';
     }
 }

@@ -1,25 +1,40 @@
 package Presentation;
 
-import Domain.Worker;
+import Service.*;
 
 import java.util.Scanner;
 
 public class ManagerLoginScreen {
-    Worker currWorker;
+    WorkerController workerController;
+    private final ArrangementController arrangementController;
+    private final RoleController roleController;
+    private final ConstraintController constraintController;
     String password;
 
-    public ManagerLoginScreen(Worker currWorker) {
-        this.currWorker = currWorker;
+    public ManagerLoginScreen(WorkerController workerController, ArrangementController arrangementController, RoleController roleController, ConstraintController constraintController) {
+        this.workerController = workerController;
+        this.arrangementController = arrangementController;
+        this.roleController = roleController;
+        this.constraintController = constraintController;
         askForPassword();
     }
 
-    public void askForPassword(){
+    public void askForPassword() {
         Scanner in = new Scanner(System.in);
-        System.out.println("Hello "+ currWorker.getName() +"!\nEnter password:");
-        password = String.valueOf(in.nextInt());
+        // Safety null check
+        if (workerController.getCurrWorker() == null) return;
+
+        System.out.println("Hello " + workerController.getCurrWorker().getName() + "!\nEnter password:");
+        try {
+            password = String.valueOf(in.nextInt());
+        } catch (Exception e) {
+            return;
+        }
         // same password as currWorker password?
-        if (currWorker.getPassword().equals(password)){
-            new ManagerScreen(currWorker);
+        if (workerController.getCurrWorker().getPassword().equals(password)) {
+            new ManagerScreen(workerController,arrangementController,roleController,constraintController );
+        } else {
+            System.out.println("Wrong password. Try again later.");
         }
     }
 }

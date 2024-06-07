@@ -2,7 +2,6 @@ package Domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.String;
 
 public class Role {
     private String name;
@@ -14,15 +13,15 @@ public class Role {
     }
 
     // Add to this role, other roles it cant perform
-    public void addCantDo(Worker worker, Role role) {
-        if (!worker.getRoles().contains(role))
-            this.cantDo.add(role);
+    public void addCantDo(Role role) {
+        // Cant add same role to my cant do list.
+        if (role.equals(this)) return;
+        this.cantDo.add(role);
     }
 
     // remove roles - cant do
-    public void removeCantDo(Worker worker, Role role) {
-        if (worker.getRoles().contains(role))
-            this.cantDo.remove(role);
+    public void removeCantDo(Role role) {
+        this.cantDo.remove(role);
     }
 
     public String getName() {
@@ -39,6 +38,12 @@ public class Role {
 
     public void setCantDo(List<Role> cantDo) {
         this.cantDo = cantDo;
+    }
+//toString
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     // Equality by role NAME.

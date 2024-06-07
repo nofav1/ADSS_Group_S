@@ -2,33 +2,29 @@ package Domain;
 
 public class Constraint {
     private final Worker currWorker;
-    private final Shift currShift;
-    private Shift.sTypes shiftType;
-
+    private String shiftType;
+    private String date;
 
     // Constructor
-    public Constraint(Worker currWorker, Shift currShift) {
+    public Constraint(Worker currWorker, String cType, String date) {
         this.currWorker = currWorker;
-        this.currShift = currShift;
+        this.shiftType = cType;
+        this.date = date;
         // No shift type here, because it can be none.
     }
 
 
-    // Getters & Setters
-    public void setShiftType(Shift.sTypes shiftType) {
-        this.shiftType = shiftType;
+    // Getters
+    public String getShiftType() {
+        return shiftType;
     }
 
-    public Shift.sTypes getShiftType() {
-        return shiftType;
+    public String getDate() {
+        return date;
     }
 
     public Worker getCurrWorker() {
         return currWorker;
-    }
-
-    public Shift getCurrShift() {
-        return currShift;
     }
 
 
@@ -37,15 +33,12 @@ public class Constraint {
     public String toString() {
         return "Constraint{" +
                 "currWorker=" + currWorker +
-                ", currShift=" + currShift +
                 '}';
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        return currShift.equals(((Constraint) obj).currShift) &&
-                shiftType == ((Constraint) obj).shiftType &&
-                currWorker.equals(((Constraint) obj).currWorker);
+        return currWorker.equals(((Constraint) obj).currWorker) && date.equals(((Constraint) obj).date);
     }
 }

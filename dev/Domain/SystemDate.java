@@ -6,29 +6,28 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.lang.String;
 import java.util.List;
 
 public class SystemDate {
     static protected DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-    private java.lang.String date;
+    private String date;
 
     // Constructor
-    public SystemDate(String date)  {
+    public SystemDate(Date date) {
         // format the date
-        if (date != null && !date.isEmpty())
+        if (date != null)
             this.date = format.format(date);
 
     }
 
     // get this.date by String format.
-    public java.lang.String getDateString() {
+    public String getDateString() {
         return date;
     }
 
     // get this.date by Date format.
-    public java.util.Date getDate() {
-        java.util.Date mDate = null;
+    public Date getDate() {
+        Date mDate = null;
         try {
             mDate = format.parse(date);
         } catch (ParseException e) {
@@ -52,11 +51,27 @@ public class SystemDate {
             // add 1 day each time
             cal.add(Calendar.DAY_OF_MONTH, i);
             // cast the date to string
-            java.lang.String dateAfter = format.format(cal.getTime());
+            String dateAfter = format.format(cal.getTime());
             // save it
             mDates.add(dateAfter);
         }
-
         return mDates;
+    }
+
+    public static int getTodayDate() {
+        Calendar cal = Calendar.getInstance();
+        return cal.get(Calendar.DAY_OF_WEEK);
+    }
+
+    public static String getEndOfWeekDate() {
+        Calendar cal = Calendar.getInstance();
+        // Get today's date
+        int today = cal.get(Calendar.DAY_OF_WEEK);
+        // How many days until saturday ?
+        int difference = 7 - today;
+        // change calendar time to last day of week
+        cal.add(Calendar.DAY_OF_WEEK, difference);
+        // return
+        return format.format(cal.getTime());
     }
 }

@@ -3,25 +3,23 @@ package Service;
 import DataAccess.ConstraintDao;
 import DataAccess.Dao;
 import Domain.Constraint;
-import Domain.Shift;
 import Domain.Worker;
 
 import java.util.HashMap;
-import java.util.List;
 
-public class ConstraintController {
+public class ConstraintController implements IController {
     private Dao constraintDao;
+    public static int LAST_DAY=-1; // INITIALIZE WHEN Reading Configuration file.
+
 
     // Constructor
     public ConstraintController() {
         constraintDao = ConstraintDao.getInstance();
     }
 
-    public Constraint createConstraint(Shift shift, Worker worker, Shift.sTypes sType) {
+    public Constraint createConstraint(Worker worker, String cType, String date) {
         // Create new constraint
-        Constraint currConstraint = new Constraint(worker, shift);
-        currConstraint.setShiftType(sType);
-
+        Constraint currConstraint = new Constraint(worker, cType, date);
         // save it in DB
         constraintDao.save(currConstraint);
         return currConstraint;
@@ -31,13 +29,21 @@ public class ConstraintController {
         return (HashMap<String, Constraint>) constraintDao.getAll();
     }
 
-    public void deleteConstraint(Constraint constraint) {
-        constraintDao.delete(constraint);
+    public void deleteConstraint(Worker worker,String cType,String date) {
+        constraintDao.delete(new Constraint(worker,cType,date));
     }
 
     public void updateConstraint(Constraint constraint) {
         constraintDao.update(constraint);
     }
 
+    public static void setLastDay(int lastDay) {
+        LAST_DAY = lastDay;
+    }
+
+    @Override
+    public void loadFakeData() {
+
+    }
 
 }

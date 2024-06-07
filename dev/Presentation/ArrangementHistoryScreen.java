@@ -5,11 +5,14 @@ import Service.*;
 public class ArrangementHistoryScreen {
     ArrangementController ac;
 
-    public ArrangementHistoryScreen() {
-        this.ac = new ArrangementController();
+    public ArrangementHistoryScreen(ArrangementController arrangementController) {
+        this.ac = arrangementController;
     }
-    private void menu(){
+
+    private void menu() {
         // get all arrangements
+        System.out.println("All Shifts History\n-------------------");
+        System.out.println(ac.allShiftsHistory());
     }
 
 }

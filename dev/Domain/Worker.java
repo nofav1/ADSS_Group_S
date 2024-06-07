@@ -3,9 +3,9 @@ package Domain;
 import java.util.ArrayList;
 
 public class Worker {
-    private int ID;
+    private String ID;
     private String name;
-    private int bankAccount;
+    private String bankAccount;
     private WorkConditions workConditions;
     private ArrayList<Role> roles;
     private String password;
@@ -14,12 +14,13 @@ public class Worker {
     private boolean isActive;
 
     //Constructor
-    public Worker(int ID, String name, int bankAccount, WorkConditions workConditions, ArrayList<Role> roles, String password, String branch) {
+    public Worker(String ID, String name, String bankAccount, WorkConditions workConditions, Role role, String password, String branch) {
+        roles=new ArrayList<>();
         this.ID = ID;
         this.name = name;
         this.bankAccount = bankAccount;
         this.workConditions = workConditions;
-        this.roles = roles;
+        this.roles.add(role);
         this.password = password;
         this.branch = branch;
 
@@ -38,11 +39,11 @@ public class Worker {
         this.name = name;
     }
 
-    public int getBankAccount() {
+    public String getBankAccount() {
         return bankAccount;
     }
 
-    public void setBankAccount(int bankAccount) {
+    public void setBankAccount(String bankAccount) {
         this.bankAccount = bankAccount;
     }
 
@@ -94,7 +95,7 @@ public class Worker {
         isActive = active;
     }
 
-    public int getID() {
+    public String getID() {
         return ID;
     }
 // Other methods...
@@ -110,6 +111,17 @@ public class Worker {
         if (role != null && roles.contains(role)) {
             this.roles.remove(role);
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder res = new StringBuilder();
+        res.append("Worker: " + name );
+        res.append(" Roles: ");
+        for (Role role : roles) {
+            res.append(role + "\n");
+        }
+        return res.toString();
     }
 
     // Equals by ID

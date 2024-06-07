@@ -1,81 +1,116 @@
 package Presentation;
 
-import Domain.Worker;
+import Domain.Arrangement;
+import Domain.Constraint;
+import Domain.SystemDate;
 import Service.*;
-import com.sun.tools.javac.Main;
+import org.yaml.snakeyaml.Yaml;
 
-import java.util.Scanner;
-import java.util.Scanner;
-
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class MainLoginScreen {
-    private Scanner scan = new Scanner(System.in);
-    private boolean result = false;
-    private WorkerController workerController;
+    private final Scanner scan = new Scanner(System.in);
+    private final WorkerController workerController;
+    private final ArrangementController arrangementController;
+    private final ConstraintController constraintController;
+    private final RoleController roleController;
+    private boolean isLoadedData = false;
+
 
     public MainLoginScreen() {
-        Worker currWorker = mainLoginScreen();
-        if (currWorker != null) mainScreen(currWorker);
+        // DB init
+        workerController = new WorkerController();
+        arrangementController = new ArrangementController();
+        constraintController = new ConstraintController();
+        roleController = new RoleController();
+
+        // load data from configuration file into the system.
+        getPathFromConfig();
+
+        // tests
+        unitTests();
+
+        // The system run
+        while (mainLoginScreen() != 0) {
+            if (workerController.getCurrWorker() != null) mainScreen();
+        }
     }
 
 
-    private Worker mainLoginScreen() {
-        Worker mWorker = null;
-        WorkerController workerController;
-        workerController = new WorkerController();
+    private int mainLoginScreen() {
+        int choice;
         System.out.println("Welcome to S Group System. To continue you need to login:\nPlease type your id, or type 0 to exit");
         while (true) {
-            int choice = this.scan.nextInt();
+            choice = this.scan.nextInt();
             if (choice == 0) {
                 System.out.println("Exiting the system. Goodbye!");
                 break;
             }
 
             // Find the worker in the worker's list.
-            Worker worker = workerController.getWorker(choice);
-            if (worker == null) {
+            workerController.setCurrWorker(workerController.getWorker(String.valueOf(choice)));
+            if (workerController.getCurrWorker() == null) {
                 System.out.println("No worker found. Please try again or type 0 to exit.");
             } else {
                 // TODO: Add password feature for every USER (if he has one).
-                System.out.println("Successfully logged in! Moving to Main screen");
-                mWorker = worker;
+                System.out.println("Successfully logged in! Moving to Presentation.Main screen");
                 break;
             }
         }
-        return mWorker;
+        return choice;
     }
 
-    private void mainScreen(Worker currWorker) {
+    private void mainScreen() {
         int choose = -1;
-        while (choose != 0) {
-            System.out.println("Main Workers Screen.\nPlease Choose An Option:" +
+        while (choose != 6) {
+            System.out.println("Presentation.Main Workers Screen.\nPlease Choose An Option:" +
                     "\n1)Show Weekly Arrangement" +
                     "\n2)Show Today's Shift" +
                     "\n3)Constraints Weekly Submission" +
                     "\n4)Manager Screen" +
                     "\n5)Load Fake Data" +
-                    "\n5)Exit");
+                    "\n6)Exit");
             choose = scan.nextInt();
             switch (choose) {
                 case 1:
-//                    System.out.println(arrangementController.getCurrArrangement());
+                    // There are at least 2 arrangements.
+                    // Get the 2 from the end. its current week.
+                    System.out.println(arrangementController.getArrangements().values().stream().toList().get(arrangementController.getArrangements().values().size() - 2));
                     break;
                 case 2:
+                    System.out.println("Feature not developed yet.");
 //                    System.out.println(arrangementController.getCurrArrangement().getTodayShift());
+                    break;
                 case 3:
-                    new ConstraintsScreen();
+                    // Only if the day
+                    if (ConstraintController.LAST_DAY > SystemDate.getTodayDate())
+                        new ConstraintsScreen(arrangementController, workerController, constraintController);
+                    else System.out.println("Last day to submit constraints have passed already. contact a manager");
+                    break;
                 case 4:
                     // Send the user to ManagerLoginScreen only if his Worker is Manager.
-                    if (currWorker.isManager()) {
-                        new ManagerLoginScreen(currWorker);
-
+                    if (workerController.getCurrWorker().isManager()) {
+                        new ManagerLoginScreen(workerController, arrangementController, roleController, constraintController);
                     } else System.out.println("You're not a Manager!");
                     break;
                 case 5:
-                    // TODO: LOAD FAKE DATA FROM CSV.
+                    // Load only once.
+                    if (!isLoadedData) {
+
+                        isLoadedData = true;
+                        // Workers & Roles
+                        workerController.loadFakeData();
+                        roleController.loadFakeData();
+                    }
+                    break;
+                case 6:
+                    workerController.setCurrWorker(null);
+                    System.out.println("Exiting System.. Good Bye!");
+                    break;
                 case 0:
-                    System.out.println("Exiting.. Good Bye!");
                     break;
                 default:
                     System.out.println("Wrong Option!");
@@ -84,5 +119,85 @@ public class MainLoginScreen {
 
             }
         }
+    }
+
+
+    public int getPathFromConfig() {
+        Yaml yaml = new Yaml();
+        int path = -1;
+        try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("configuration.yaml")) {
+            if (inputStream == null) {
+                throw new IllegalArgumentException("file not found! " + "config.yaml");
+            } else {
+                // Parse the YAML file
+                Map<String, Object> config = yaml.load(inputStream);
+                // Access the 'path' value
+                path = (int) config.get("LAST_DAY");
+
+                ConstraintController.setLastDay(path); // SET last day for submitting constraints.
+                return path;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return path;
+
+    }
+
+
+    // Unit tests for Domain & Database -  CRUD.
+    private void unitTests() {
+        // Login with worker successfully and exit
+        // Test 1 - Work DB IS Ready.
+        if (workerController.getAllWorkers().isEmpty()) System.out.println("Test Failed");
+        else System.out.println("Test Passed");
+        roleController.loadFakeData();
+        // Test 2 - Roles DB Is Ready.
+        if (roleController.getRoles().isEmpty()) System.out.println("Test Failed");
+        else System.out.println("Test Passed");
+        // Test 3 Arrangement creation into DB
+        arrangementController.createGetArrangement();
+        System.out.println(arrangementController.getArrangements().size());
+        if (arrangementController.getArrangements().isEmpty()) System.out.println("Test Failed");
+        else System.out.println("Test Passed");
+
+        // Test 4 - update worker
+        System.out.println("Currently worker is a manager? : " + workerController.getAllWorkers().get(0).isManager());
+        workerController.getAllWorkers().get(0).setManager(true);
+        // update worker after changing it.
+        workerController.updateWorker(workerController.getAllWorkers().get(0));
+        if (workerController.getAllWorkers().get(0).isManager()) System.out.println("Test passed");
+        else System.out.println("Test Failed");
+
+        // Test 5 - delete role
+        roleController.getRoles().remove("4");
+        if (roleController.getRoles().get("4") == null) System.out.println("Test passed");
+        else System.out.println("Test Failed");
+
+        // Test 6 - Constraints LAST_DAY Is Updated from yaml
+        if (ConstraintController.LAST_DAY == -1) System.out.println("Test 6 failed");
+        System.out.println("Test passed");
+
+        // Test 7 - Create constraint and save it in DB.
+        constraintController.createConstraint(workerController.getAllWorkers().getFirst(), "Morning", "07/06/2024");
+        if (!constraintController.getAllConstraints().isEmpty()) System.out.println("Test 7 failed");
+        System.out.println("Test passed");
+
+        // Test 8 - delete constraint from DB.
+        constraintController.deleteConstraint(workerController.getAllWorkers().getFirst(), "Morning", "07/06/2024");
+        if (constraintController.getAllConstraints().isEmpty()) System.out.println("Test passed");
+        else System.out.println("Test 8 failed");
+
+        // Test 9 - arrangements nonull, and is casted properly to the right type.
+
+        if (arrangementController.getArrangements() instanceof HashMap<String, Arrangement>)
+            System.out.println("Test passed");
+        else System.out.println("Test 9 failed");
+
+        // Test 10 - arrangements nonull, and is casted properly to the right type.
+
+        if (constraintController.getAllConstraints() instanceof HashMap<String, Constraint>)
+            System.out.println("Test passed");
+        else System.out.println("Test 10 failed");
     }
 }
