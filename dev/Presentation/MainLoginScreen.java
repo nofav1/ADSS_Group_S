@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainLoginScreen {
     private final Scanner scan = new Scanner(System.in);
@@ -42,7 +44,8 @@ public class MainLoginScreen {
 
     private int mainLoginScreen() {
         int choice;
-        System.out.println("Welcome to S Group System. To continue you need to login:\nPlease type your id, or type 0 to exit");
+        System.out.println("Welcome to S-Group Super-Market Workers Management System\n-----------------------------------------------------------" +
+                "\nTo continue you need to login\nPlease type your id, or type 0 to exit:");
         while (true) {
             choice = this.scan.nextInt();
             if (choice == 0) {
@@ -147,57 +150,58 @@ public class MainLoginScreen {
 
     // Unit tests for Domain & Database -  CRUD.
     private void unitTests() {
+        Logger logger= Logger.getLogger(MainLoginScreen.class.getName());
         // Login with worker successfully and exit
         // Test 1 - Work DB IS Ready.
-        if (workerController.getAllWorkers().isEmpty()) System.out.println("Test Failed");
-        else System.out.println("Test Passed");
+        if (workerController.getAllWorkers().isEmpty()) logger.log(Level.ALL,"Test Failed");
+        else logger.log(Level.ALL,"Test Passed");
         roleController.loadFakeData();
         // Test 2 - Roles DB Is Ready.
-        if (roleController.getRoles().isEmpty()) System.out.println("Test Failed");
-        else System.out.println("Test Passed");
+        if (roleController.getRoles().isEmpty()) logger.log(Level.ALL,"Test Failed");
+        else logger.log(Level.ALL,"Test Passed");
         // Test 3 Arrangement creation into DB
         arrangementController.createGetArrangement();
-        System.out.println(arrangementController.getArrangements().size());
-        if (arrangementController.getArrangements().isEmpty()) System.out.println("Test Failed");
-        else System.out.println("Test Passed");
+        logger.log(Level.ALL, String.valueOf(arrangementController.getArrangements().size()));
+        if (arrangementController.getArrangements().isEmpty()) logger.log(Level.ALL,"Test Failed");
+        else logger.log(Level.ALL,"Test Passed");
 
         // Test 4 - update worker
-        System.out.println("Currently worker is a manager? : " + workerController.getAllWorkers().get(0).isManager());
+        logger.log(Level.ALL,"Currently worker is a manager? : " + workerController.getAllWorkers().get(0).isManager());
         workerController.getAllWorkers().get(0).setManager(true);
         // update worker after changing it.
         workerController.updateWorker(workerController.getAllWorkers().get(0));
-        if (workerController.getAllWorkers().get(0).isManager()) System.out.println("Test passed");
-        else System.out.println("Test Failed");
+        if (workerController.getAllWorkers().get(0).isManager()) logger.log(Level.ALL,"Test passed");
+        else logger.log(Level.ALL,"Test Failed");
 
         // Test 5 - delete role
         roleController.getRoles().remove("4");
-        if (roleController.getRoles().get("4") == null) System.out.println("Test passed");
-        else System.out.println("Test Failed");
+        if (roleController.getRoles().get("4") == null) logger.log(Level.ALL,"Test passed");
+        else logger.log(Level.ALL,"Test Failed");
 
         // Test 6 - Constraints LAST_DAY Is Updated from yaml
-        if (ConstraintController.LAST_DAY == -1) System.out.println("Test 6 failed");
-        System.out.println("Test passed");
+        if (ConstraintController.LAST_DAY == -1) logger.log(Level.ALL,"Test 6 failed");
+        logger.log(Level.ALL,"Test passed");
 
         // Test 7 - Create constraint and save it in DB.
         constraintController.createConstraint(workerController.getAllWorkers().getFirst(), "Morning", "07/06/2024");
-        if (!constraintController.getAllConstraints().isEmpty()) System.out.println("Test 7 failed");
-        System.out.println("Test passed");
+        if (!constraintController.getAllConstraints().isEmpty()) logger.log(Level.ALL,"Test 7 failed");
+        logger.log(Level.ALL,"Test passed");
 
         // Test 8 - delete constraint from DB.
         constraintController.deleteConstraint(workerController.getAllWorkers().getFirst(), "Morning", "07/06/2024");
-        if (constraintController.getAllConstraints().isEmpty()) System.out.println("Test passed");
-        else System.out.println("Test 8 failed");
+        if (constraintController.getAllConstraints().isEmpty()) logger.log(Level.ALL,"Test passed");
+        else logger.log(Level.ALL,"Test 8 failed");
 
         // Test 9 - arrangements nonull, and is casted properly to the right type.
 
         if (arrangementController.getArrangements() instanceof HashMap<String, Arrangement>)
-            System.out.println("Test passed");
-        else System.out.println("Test 9 failed");
+            logger.log(Level.ALL,"Test passed");
+        else logger.log(Level.ALL,"Test 9 failed");
 
         // Test 10 - arrangements nonull, and is casted properly to the right type.
 
         if (constraintController.getAllConstraints() instanceof HashMap<String, Constraint>)
-            System.out.println("Test passed");
-        else System.out.println("Test 10 failed");
+            logger.log(Level.ALL,"Test passed");
+        else logger.log(Level.ALL,"Test 10 failed");
     }
 }
