@@ -149,59 +149,49 @@ public class MainLoginScreen {
 
 
     // Unit tests for Domain & Database -  CRUD.
-    private void unitTests() {
-        Logger logger= Logger.getLogger(MainLoginScreen.class.getName());
+    private boolean unitTests() {
         // Login with worker successfully and exit
         // Test 1 - Work DB IS Ready.
-        if (workerController.getAllWorkers().isEmpty()) logger.log(Level.ALL,"Test Failed");
-        else logger.log(Level.ALL,"Test Passed");
+        if (workerController.getAllWorkers().isEmpty()) return false;
         roleController.loadFakeData();
         // Test 2 - Roles DB Is Ready.
-        if (roleController.getRoles().isEmpty()) logger.log(Level.ALL,"Test Failed");
-        else logger.log(Level.ALL,"Test Passed");
+        if (roleController.getRoles().isEmpty()) return false;
         // Test 3 Arrangement creation into DB
         arrangementController.createGetArrangement();
-        logger.log(Level.ALL, String.valueOf(arrangementController.getArrangements().size()));
-        if (arrangementController.getArrangements().isEmpty()) logger.log(Level.ALL,"Test Failed");
-        else logger.log(Level.ALL,"Test Passed");
+//        logger.log(Level.ALL, String.valueOf(arrangementController.getArrangements().size()));
+        if (arrangementController.getArrangements().isEmpty()) return false;
 
         // Test 4 - update worker
-        logger.log(Level.ALL,"Currently worker is a manager? : " + workerController.getAllWorkers().get(0).isManager());
+//        logger.log(Level.ALL,"Currently worker is a manager? : " + workerController.getAllWorkers().get(0).isManager());
         workerController.getAllWorkers().get(0).setManager(true);
         // update worker after changing it.
         workerController.updateWorker(workerController.getAllWorkers().get(0));
-        if (workerController.getAllWorkers().get(0).isManager()) logger.log(Level.ALL,"Test passed");
-        else logger.log(Level.ALL,"Test Failed");
+        if (!workerController.getAllWorkers().get(0).isManager()) return false;
 
         // Test 5 - delete role
         roleController.getRoles().remove("4");
-        if (roleController.getRoles().get("4") == null) logger.log(Level.ALL,"Test passed");
-        else logger.log(Level.ALL,"Test Failed");
+        if (!(roleController.getRoles().get("4") == null)) return false;
 
         // Test 6 - Constraints LAST_DAY Is Updated from yaml
-        if (ConstraintController.LAST_DAY == -1) logger.log(Level.ALL,"Test 6 failed");
-        logger.log(Level.ALL,"Test passed");
+        if (ConstraintController.LAST_DAY == -1) return false;
+
 
         // Test 7 - Create constraint and save it in DB.
         constraintController.createConstraint(workerController.getAllWorkers().getFirst(), "Morning", "07/06/2024");
-        if (!constraintController.getAllConstraints().isEmpty()) logger.log(Level.ALL,"Test 7 failed");
-        logger.log(Level.ALL,"Test passed");
+        if (!constraintController.getAllConstraints().isEmpty()) return false;
 
         // Test 8 - delete constraint from DB.
         constraintController.deleteConstraint(workerController.getAllWorkers().getFirst(), "Morning", "07/06/2024");
-        if (constraintController.getAllConstraints().isEmpty()) logger.log(Level.ALL,"Test passed");
-        else logger.log(Level.ALL,"Test 8 failed");
+        if (!constraintController.getAllConstraints().isEmpty()) return false;
 
         // Test 9 - arrangements nonull, and is casted properly to the right type.
 
-        if (arrangementController.getArrangements() instanceof HashMap<String, Arrangement>)
-            logger.log(Level.ALL,"Test passed");
-        else logger.log(Level.ALL,"Test 9 failed");
+        if (!(arrangementController.getArrangements() instanceof HashMap<String, Arrangement>)) return false;
 
         // Test 10 - arrangements nonull, and is casted properly to the right type.
 
-        if (constraintController.getAllConstraints() instanceof HashMap<String, Constraint>)
-            logger.log(Level.ALL,"Test passed");
-        else logger.log(Level.ALL,"Test 10 failed");
+        if (!(constraintController.getAllConstraints() instanceof HashMap<String, Constraint>)) return false;
+
+        return true;
     }
 }
