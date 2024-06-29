@@ -1,4 +1,4 @@
-package Service;
+package Data;
 import Domain.*;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
