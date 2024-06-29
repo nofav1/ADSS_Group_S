@@ -1,71 +1,69 @@
 package Domain;
 
+import com.google.gson.Gson;
+
 public class Product {
-    private int id;
+    private int pn; // Product number
     private String name;
-    private String expiring_date;
-    private String stored;
-    private String section;
-    private boolean isDefect;
-    private Classification c;
+    private int demand;
+    private int supplyTime;
+    private int minAmountForAlert;
+    private String manufacturer;
+    private int currentAmount;
 
-    public Product(){
-        isDefect = false;
+    public int getPn() {
+        return pn;
     }
 
-    public String getStored() {
-        return stored;
-    }
-
-    public void setStored(String stored) {
-        this.stored = stored;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setExpiring_date(String expiring_date) {
-        this.expiring_date = expiring_date;
-    }
-
-    public void setSection(String section) {
-        this.section = section;
-    }
-
-    public void setC(Classification c) {
-        this.c = c;
-    }
-
-    public int getId() {
-        return id;
+    public void setPn(int pn) {
+        this.pn = pn;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getExpiring_date() {
-        return expiring_date;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getSection() {
-        return section;
+    public int getDemand() {
+        return demand;
     }
 
-    public Classification getC() {
-        return c;
+    public void setDemand(int demand) {
+        this.demand = demand;
     }
 
-    public void setDefect(boolean defect) {
-        isDefect = defect;
+    public int getSupplyTime() {
+        return supplyTime;
     }
 
-    public boolean isDefect() {
-        return isDefect;
+    public void setSupplyTime(int supplyTime) {
+        this.supplyTime = supplyTime;
+    }
+
+    public int getMinAmountForAlert() {
+        return minAmountForAlert;
+    }
+
+    public void setMinAmountForAlert(int minAmountForAlert) {
+        this.minAmountForAlert = minAmountForAlert;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public int getCurrentAmount() {
+        return currentAmount;
+    }
+
+    public void setCurrentAmount(int currentAmount) {
+        this.currentAmount = currentAmount;
     }
 }

@@ -56,6 +56,7 @@ public class DataController {
     //add = true : increment by 1 in the catalog product location in the hash map
     //add = false : decrement by 1 in the catalog product location in the hash map
     public void changeProductToCountMap(boolean add, String category, String subCategory, String size, String location){
+        /*
         // Check if category exists
         if (!productsAmountMapByCategory.containsKey(category)) {
             productsAmountMapByCategory.put(category, new HashMap<>());
@@ -85,7 +86,7 @@ public class DataController {
         }
         else{ //decrement
             locMap.put(location, locMap.getOrDefault(location, 0) - 1);
-        }
+        }*/
     }
     public void setProductDetails(Product product, String[] details ){ //the array contains: int pID, String pName, String pExpD, String pLoc, String pSection, int pCatalogNum,String pCategory, String pSubCategory, int pSize, double pCost, int pDemand, int pSupplyTime,int pMinAmountForAlert, String pManufacturer, int pSupplierDis, int pStoreDis
         product.setId(Integer.parseInt(details[0]));
