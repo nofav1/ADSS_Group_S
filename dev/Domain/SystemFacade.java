@@ -47,18 +47,17 @@ public class SystemFacade {
 
     // Method to remove an item
     public void removeItem(int item_id) {
-        // Placeholder for removing item implementation
+        item_manager.removeItem(item_id);
     }
 
     // Method to mark an item as defective
     public void markAsDefect(int item_id) {
-        // Placeholder for marking item as defect implementation
+        item_manager.markAsDefect(item_id);
     }
 
     // Method to show item details
-    public String showItemDetails(int item_id) {
-        // Placeholder for showing item details implementation
-        return null;
+    public JsonObject showItemDetails(int item_id) throws SQLException {
+        return item_manager.showItemDetails(item_id);
     }
 
     // Method to update discount

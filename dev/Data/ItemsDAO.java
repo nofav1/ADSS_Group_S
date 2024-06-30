@@ -37,7 +37,7 @@ public class ItemsDAO extends ADAO{
 
     @Override
     public void add(JsonObject item_json) throws SQLException{
-        String query = "INSERT INTO Item(item_id, expiring_date, section, location, isDefect, supplir_dis, costPrice, purchase_price, product_number) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Item(item_id, expiring_date, section, location, isDefect, supplier_dis, costPrice, purchase_price, product_number) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(query)){
@@ -47,7 +47,7 @@ public class ItemsDAO extends ADAO{
             String section = item_json.get("section").getAsString();
             int location = item_json.get("location").getAsInt();
             boolean isDefect = false; //default
-            int supplir_dis = item_json.get("supplier_discount").getAsInt();
+            int supplier_dis = item_json.get("supplier_discount").getAsInt();
             double costPrice = item_json.get("cost_price").getAsDouble();
             double purchase_price; //calculate from product table with discount
             int product_number = item_json.get("catalog_number").getAsInt();
@@ -61,7 +61,7 @@ public class ItemsDAO extends ADAO{
             preparedStatement.setString(3, section);
             preparedStatement.setInt(4, location);
             preparedStatement.setBoolean(5, isDefect);
-            preparedStatement.setInt(6, supplir_dis);
+            preparedStatement.setInt(6, supplier_dis);
             preparedStatement.setDouble(7, costPrice);
             preparedStatement.setDouble(8, purchase_price);
             preparedStatement.setInt(9, product_number);
@@ -117,7 +117,7 @@ public class ItemsDAO extends ADAO{
                     jsonObject.addProperty("section", resultSet.getString("section"));
                     jsonObject.addProperty("location", resultSet.getString("location"));
                     jsonObject.addProperty("isDefect", resultSet.getBoolean("isDefect"));
-                    jsonObject.addProperty("supplir_dis", resultSet.getInt("supplir_dis"));
+                    jsonObject.addProperty("supplier_dis", resultSet.getInt("supplier_dis"));
                     jsonObject.addProperty("costPrice", resultSet.getDouble("costPrice"));
                     jsonObject.addProperty("purchase_price", resultSet.getDouble("purchase_price"));
                     jsonObject.addProperty("product_number", resultSet.getInt("product_number"));

@@ -34,18 +34,17 @@ public class ItemManager {
 
     // Method to remove an item
     public void removeItem(int item_id) {
-        // Placeholder for removing item implementation
+        item_repo.removeItem(item_id);
     }
 
     // Method to mark an item as defective
     public void markAsDefect(int item_id) {
-        // Placeholder for marking item as defect implementation
+        item_repo.markAsDefect(item_id);
     }
 
     // Method to show item details
-    public String showItemDetails(int item_id) {
-        // Placeholder for showing item details implementation
-        return null;
+    public JsonObject showItemDetails(int item_id) throws SQLException {
+        return item_repo.showItemDetails(item_id);
     }
 
     // Method to generate defect report

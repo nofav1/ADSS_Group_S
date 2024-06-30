@@ -54,6 +54,7 @@ public class menu {
                     choice = 0;
                 }
             } else if (choice == 2) { //Items Functions
+                //TODO: add option to add product and category (and remove)
                 menu = "Items Functions:\n1.Add item" +
                         "\n2.Remove item" +
                         "\n3.Mark as defective" +
@@ -80,13 +81,29 @@ public class menu {
                         }
                         break;
                     case 2: //Remove item
-                        removeItem();
+                        try{
+                            removeItem();
+                        }catch (Exception e){
+                            System.out.println("Error in remove item");
+                            System.out.println(e.getMessage());
+                        }
                         break;
                     case 3: //Mark as defective
-                        markAsDefective();
+                        try{
+                            markAsDefective();
+                        }catch (Exception e){
+                            System.out.println("Error in mark as defective item");
+                            System.out.println(e.getMessage());
+                        }
+                        choice = 0;
                         break;
                     case 4: //Show item
-                        showItem();
+                        try {
+                            showItem();
+                        }
+                        catch (SQLException e){
+                            System.out.println(e.getMessage());
+                        }
                         break;
                     case 5: //Update store discount
                         menu = "Update store discount:\n1.Discount by category" +
@@ -104,10 +121,20 @@ public class menu {
 
                         switch (choice) {
                             case 1: //Discount by category
-                                discountByCategory();
+                                try {
+                                    discountByCategory();
+                                }
+                                catch (Exception e){
+                                    System.out.println(e.getMessage());
+                                }
                                 break;
                             case 2: //Discount by product
-                                discountByProduct();
+                                try {
+                                    discountByProduct();
+                                }
+                                catch (Exception e){
+                                    System.out.println(e.getMessage());
+                                }
                                 break;
                         }
                         break;
@@ -306,14 +333,24 @@ public class menu {
         system.addItem(item_json);
     }
     public static void removeItem(){
-
-
+        System.out.println("Enter item ID: ");
+        int itemID = scan.nextInt();
+        scan.nextLine();
+        system.removeItem(itemID);
     }
     public static void markAsDefective(){
-
+        System.out.println("Enter item ID: ");
+        int itemID = scan.nextInt();
+        scan.nextLine();
+        system.markAsDefect(itemID);
     }
-    public static void showItem(){
-
+    public static void showItem() throws SQLException {
+        System.out.println("Enter item ID: ");
+        int itemID = scan.nextInt();
+        scan.nextLine();
+        JsonObject item_json = system.showItemDetails(itemID);
+        String details = getItemDetails(item_json);
+        System.out.println(details);
     }
 
     public static void discountByCategory(){
@@ -370,6 +407,23 @@ public class menu {
 
         return json;
 
+    }
+
+    public static String getItemDetails(JsonObject itemJson){
+        StringBuilder details = new StringBuilder();
+
+        details.append("Item ID: ").append(itemJson.get("item_id").getAsInt()).append("\n")
+                .append("Expiring Date: ").append(itemJson.get("expiring_date").getAsString()).append("\n")
+                .append("Section: ").append(itemJson.get("section").getAsString()).append("\n")
+                .append("Location: ").append(itemJson.get("location").getAsString()).append("\n")
+                .append("Is Defect: ").append(itemJson.get("isDefect").getAsBoolean()).append("\n")
+                .append("Supplier Discount: ").append(itemJson.get("supplier_dis").getAsInt()).append("\n")
+                .append("Cost Price: ").append(itemJson.get("costPrice").getAsDouble()).append("\n")
+                .append("Purchase Price: ").append(itemJson.get("purchase_price").getAsDouble()).append("\n");
+
+        //TODO: add all item details - category and discount and product details..
+
+        return details.toString();
     }
 
     public static String getPathFromConfig(){

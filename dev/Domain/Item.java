@@ -14,7 +14,7 @@ public class Item {
     private char section;
     private Location location;
     private boolean isDefect;
-    private int supplir_dis;
+    private int supplier_dis;
     private double costPrice;
     private double purchase_price;
     private Product product;
@@ -60,11 +60,11 @@ public class Item {
     }
 
     public int getSupplir_dis() {
-        return supplir_dis;
+        return supplier_dis;
     }
 
-    public void setSupplir_dis(int supplir_dis) {
-        this.supplir_dis = supplir_dis;
+    public void setSupplier_dis(int supplier_dis) {
+        this.supplier_dis = supplier_dis;
     }
 
     public double getCostPrice() {
