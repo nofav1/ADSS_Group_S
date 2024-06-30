@@ -19,9 +19,10 @@ public class DataController {
         productsAmountMapByCategory = new HashMap<>();
         catalogNumSet = new HashSet<>();
     }
+
     public void ImportData(String path){
         // import CSV file path
-
+    /*
         try (CSVReader reader = new CSVReader(new FileReader(path))) {
             String[] nextRecord; //array: int pID, String pName, String pExpD, String pLoc, String pSection, int pCatalogNum,String pCategory, String pSubCategory, int pSize, double pCost, int pDemand, int pSupplyTime,int pMinAmountForAlert, String pManufacturer, int pSupplierDis, int pStoreDis
             while ((nextRecord = reader.readNext()) != null) { //reading record by record
@@ -50,7 +51,7 @@ public class DataController {
         } catch (CsvValidationException e) {
             throw new RuntimeException(e);
         }
-
+*/
     }
 
     //add = true : increment by 1 in the catalog product location in the hash map
@@ -89,6 +90,7 @@ public class DataController {
         }*/
     }
     public void setProductDetails(Product product, String[] details ){ //the array contains: int pID, String pName, String pExpD, String pLoc, String pSection, int pCatalogNum,String pCategory, String pSubCategory, int pSize, double pCost, int pDemand, int pSupplyTime,int pMinAmountForAlert, String pManufacturer, int pSupplierDis, int pStoreDis
+        /*
         product.setId(Integer.parseInt(details[0]));
         product.setName(details[1]);
         product.setExpiring_date(details[2]);
@@ -109,11 +111,15 @@ public class DataController {
         classification.setStoreDis(Integer.parseInt(details[14]));
 
         product.setC(classification);
+
+         */
     }
 
+    /*
     //return true - when product is valid and added to dataBase.
     //return false - the product's catalog number is wrong
     public boolean addProductController(String productDetails) {
+
         Product product = new Product();
         String[] detailsArray = productDetails.split(",");
         setProductDetails(product, detailsArray);
@@ -253,4 +259,5 @@ public class DataController {
         Product p = purchaseProducts.get(productID);
         return purchaseProducts.get(productID).getC().getSalePrice();
     }
+     */
 }

@@ -1,14 +1,18 @@
 package Domain;
 
+import com.google.gson.JsonObject;
+
+import java.sql.SQLException;
 import java.util.List;
 
 public class ItemManager {
     // Singleton instance
     private static ItemManager instance;
+    private ItemRepository item_repo;
 
     // Private constructor to prevent instantiation
     private ItemManager() {
-        // Private constructor to prevent instantiation
+        item_repo = ItemRepository.getInstance();
     }
 
     // Method to get the singleton instance
@@ -24,8 +28,8 @@ public class ItemManager {
     }
 
     // Method to add an item
-    public void addItem(String item) {
-        // Placeholder for adding item implementation
+    public void addItem(JsonObject item_json) throws SQLException {
+        item_repo.addItem(item_json);
     }
 
     // Method to remove an item

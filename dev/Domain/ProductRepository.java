@@ -1,5 +1,10 @@
 package Domain;
 
+import Data.ProductsDAO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -7,9 +12,12 @@ public class ProductRepository {
     // Singleton instance
     private static ProductRepository instance;
 
+    private static ProductsDAO productsDAO;
+
     // Private constructor to prevent instantiation
     private ProductRepository() {
         // Private constructor to prevent instantiation
+        productsDAO = ProductsDAO.getInstance();
     }
 
     // Method to get the singleton instance
@@ -36,9 +44,11 @@ public class ProductRepository {
     }
 
     // Method to search for a product
-    public boolean search(int catalog_num) {
+    public JsonObject search(int catalog_num) throws SQLException {
         // Placeholder for search implementation
-        return false;
+        JsonObject json = productsDAO.search(catalog_num);
+        return json;
+        //remember to return product class json - with object mapper
     }
 
     // Method to generate inventory report

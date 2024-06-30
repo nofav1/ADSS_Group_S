@@ -1,8 +1,12 @@
 package Presentation;
+import Domain.Location;
 import Data.*;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
+import Domain.SystemFacade;
+import com.google.gson.JsonObject;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
@@ -10,7 +14,113 @@ import java.util.Map;
 
 public class menu {
     public static Scanner scan;
+    public static SystemFacade system = SystemFacade.getInstance();
+
     public static void main(String[] args) {
+
+
+        int choice = 0;
+        scan = new Scanner(System.in);
+        while (choice != 3) {
+            String menu = "Menu:\n1.Generate Reports" +
+                    "\n2.Items Functions" +
+                    "\n3.Exit";
+
+            System.out.println(menu);
+
+            choice = scan.nextInt();
+            if (choice != 3) {
+                scan.nextLine();
+            } else {
+                break; //exit
+            }
+
+            if (choice == 1) { //Generate Reports
+                menu = "Generate Reports:\n1.Inventory Report" +
+                        "\n2.Defectives Report" +
+                        "\n3.Back";
+
+                System.out.println(menu);
+
+                choice = scan.nextInt();
+                if (choice != 3) {
+                    scan.nextLine();
+                }
+                if (choice == 1) { //Inventory Report
+                    generateInventoryReport();
+                } else if (choice == 2) { //Defectives Report
+                    generateDefectivesReport();
+                } else if (choice == 3) { //Back
+                    choice = 0;
+                }
+            } else if (choice == 2) { //Items Functions
+                menu = "Items Functions:\n1.Add item" +
+                        "\n2.Remove item" +
+                        "\n3.Mark as defective" +
+                        "\n4.Show item" +
+                        "\n5.Update store discount" +
+                        "\n6.Back";
+
+                System.out.println(menu);
+
+                choice = scan.nextInt();
+                if (choice != 6) {
+                    scan.nextLine();
+                } else {
+                    break; //exit
+                }
+
+                switch (choice) {
+                    case 1: //Add item
+                        try{
+                            addItem();
+                        }catch (Exception e){
+                            System.out.println("Error in adding item");
+                            System.out.println(e.getMessage());
+                        }
+                        break;
+                    case 2: //Remove item
+                        removeItem();
+                        break;
+                    case 3: //Mark as defective
+                        markAsDefective();
+                        break;
+                    case 4: //Show item
+                        showItem();
+                        break;
+                    case 5: //Update store discount
+                        menu = "Update store discount:\n1.Discount by category" +
+                                "\n2.Discount by product" +
+                                "\n3.Back";
+                        System.out.println(menu);
+
+                        choice = scan.nextInt();
+                        if (choice != 3) {
+                            scan.nextLine();
+                        } else {
+                            choice = 0;
+                            break; //Back
+                        }
+
+                        switch (choice) {
+                            case 1: //Discount by category
+                                discountByCategory();
+                                break;
+                            case 2: //Discount by product
+                                discountByProduct();
+                                break;
+                        }
+                        break;
+                    case 6: //Back
+                        break;
+                    default: //error - wrong input
+                        break;
+                }
+            }
+        }
+
+
+        /*
         DataController dataController = new DataController(); //service
         String path = getPathFromConfig();
         dataController.ImportData(path);
@@ -180,61 +290,85 @@ public class menu {
                     break;
             }
         }
+         */
 
+    }
+
+    public static void generateInventoryReport(){
+
+    }
+    public static void generateDefectivesReport(){
+
+    }
+
+    public static void addItem() throws SQLException {
+        JsonObject item_json = getItemDetails();
+        system.addItem(item_json);
+    }
+    public static void removeItem(){
+
+
+    }
+    public static void markAsDefective(){
+
+    }
+    public static void showItem(){
+
+    }
+
+    public static void discountByCategory(){
+
+    }
+    public static void discountByProduct(){
+
+    }
+
+    public static JsonObject getItemDetails(){ //get all product details from user
+        JsonObject json = new JsonObject();
+
+        System.out.print("Item ID: ");
+        int itemID = scan.nextInt();
+        scan.nextLine();
+        json.addProperty("id", itemID);
+
+        System.out.print("Item expiring date: ");
+        String iExpD = scan.nextLine();
+        json.addProperty("expiring_date", iExpD);
+
+        System.out.print("Item section: ");
+        char item_section = scan.nextLine().charAt(0);
+        json.addProperty("section", item_section);
+
+        System.out.print("Item location:(WareHouse = 0, Interior = 1)");
+        int item_Loc = scan.nextInt();
+        scan.nextLine();
+        Location loc = Location.WareHouse;
+        /*if(item_Loc == 0){
+            loc = Location.WareHouse;
+        } else if (item_Loc == 1){
+            loc = Location.Interior;
         }
+        else {
+            System.out.println("Error");
+        }*/
+        json.addProperty("location", item_Loc); //int
 
-    public static String getProductDetails(){ //get all product details from user
-        System.out.print("Product ID: ");
-        int pID = scan.nextInt();
+        System.out.print("Item supplier Discount: ");
+        int item_SupplierDis = scan.nextInt();
         scan.nextLine();
+        json.addProperty("supplier_discount", item_SupplierDis);
 
-        System.out.print("Product name: ");
-        String pName = scan.nextLine();
-
-        System.out.print("Product expiring date: ");
-        String pExpD = scan.nextLine();
-
-        System.out.print("Product location: ");
-        String pLoc = scan.nextLine();
-
-        System.out.print("Product section: ");
-        String pSection = scan.nextLine();
-
-        System.out.print("Product catalogNum: ");
-        int pCatalogNum = scan.nextInt();
+        System.out.print("Item cost price: ");
+        double item_costPrice = scan.nextDouble();
         scan.nextLine();
-        System.out.print("Product category: ");
-        String pCategory = scan.nextLine();
+        json.addProperty("cost_price", item_costPrice);
 
-        System.out.print("Product sub-category: ");
-        String pSubCategory = scan.nextLine();
+        //product catalog_num
+        System.out.print("Catalog number: ");
+        String catalog_number = scan.nextLine();
+        json.addProperty("catalog_number", catalog_number);
 
-        System.out.print("Product size: ");
-        int pSize = scan.nextInt();
-
-        System.out.print("Product cost: ");
-        double pCost = scan.nextDouble();
-
-        System.out.print("Product demand: ");
-        int pDemand = scan.nextInt();
-
-        System.out.print("Product supply Time: ");
-        int pSupplyTime = scan.nextInt();
-
-        scan.nextLine();
-        System.out.print("Product manufacturer: ");
-        String pManufacturer = scan.nextLine();
-
-        System.out.print("Product supplier Discount: ");
-        int pSupplierDis = scan.nextInt();
-
-        System.out.print("Product store Discount: ");
-        int pStoreDis = scan.nextInt();
-
-        return pID + "," + pName + "," + pExpD + "," + pLoc + "," + pSection + ","
-                + pCatalogNum + "," + pCategory + "," + pSubCategory + "," + pSize + ","
-                + pCost + "," + pDemand + "," + pSupplyTime + ","
-                + pManufacturer + "," + pSupplierDis + "," + pStoreDis;
+        return json;
 
     }
 

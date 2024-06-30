@@ -10,6 +10,12 @@ public class Product {
     private int minAmountForAlert;
     private String manufacturer;
     private int currentAmount;
+    private Classification classification;
+    private StoreDiscount storeDiscount;
+
+    public Product(int productId) {
+        pn = productId;
+    }
 
     public int getPn() {
         return pn;
@@ -65,5 +71,21 @@ public class Product {
 
     public void setCurrentAmount(int currentAmount) {
         this.currentAmount = currentAmount;
+    }
+
+    public Classification getClassification() {
+        return classification;
+    }
+
+    public void setClassification(Classification classification) {
+        this.classification = classification;
+    }
+
+    public StoreDiscount getStoreDiscount() {
+        return storeDiscount;
+    }
+
+    public void setStoreDiscount(StoreDiscount storeDiscount) {
+        this.storeDiscount = storeDiscount;
     }
 }

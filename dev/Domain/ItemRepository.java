@@ -1,14 +1,30 @@
 package Domain;
 
+import Data.IDAO;
+import Data.ItemsDAO;
+import com.google.gson.JsonObject;
+
+import java.sql.Date;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class ItemRepository {
     // Singleton instance
     private static ItemRepository instance;
 
+    private static ProductRepository product_repo;
+    private Map<Integer,Item> items;
+
+    private IDAO item_dao;
+
     // Private constructor to prevent instantiation
     private ItemRepository() {
         // Private constructor to prevent instantiation
+        items = new HashMap<>();
+        item_dao  = ItemsDAO.getInstance();
+        product_repo = ProductRepository.getInstance();
     }
 
     // Method to get the singleton instance
@@ -24,8 +40,50 @@ public class ItemRepository {
     }
 
     // Method to add an item
-    public void addItem(String item) {
-        // Placeholder for adding item implementation
+    public void addItem(JsonObject item_json) throws SQLException {
+        try {
+            int item_id = item_json.get("id").getAsInt();
+
+            if (!items.containsKey(item_id) && item_dao.search(item_id) == null) {
+                String expiring_date = item_json.get("expiring_date").getAsString();
+                String section = item_json.get("section").getAsString();
+                int location = item_json.get("location").getAsInt();
+                boolean isDefect = false; //default
+                int supplir_dis = item_json.get("supplier_discount").getAsInt();
+                double costPrice = item_json.get("cost_price").getAsDouble();
+                double purchase_price; //calculate from product table with discount
+                int product_number = item_json.get("catalog_number").getAsInt();
+
+                JsonObject product_json = product_repo.search(product_number);
+                if (product_json != null) { //product exist
+
+                    purchase_price = 0; //TODO: calculate the purchase price and update here
+
+                    Item item = new Item();
+                    item.setItem_id(item_id);
+                    item.setDefect(isDefect);
+                    item.setCostPrice(costPrice);
+                    item.setLocation(location == 0 ? Location.WareHouse : Location.Interior);
+                    item.setSection(section.charAt(0));
+                    item.setExpiring_date(Date.valueOf(expiring_date));
+                    item.setSupplir_dis(supplir_dis);
+                    item.setPurchase_price(purchase_price);
+                    item.setProduct(product_json);
+
+                    items.put(item_id, item); //add to item list in cache
+                    item_dao.add(item_json); //add item to dataBase
+
+                } else { //product does NOT exist
+                    throw new IllegalArgumentException();
+                }
+
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        catch (Exception e){
+            throw e;
+        }
     }
 
     // Method to remove an item

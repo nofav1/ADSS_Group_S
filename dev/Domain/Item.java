@@ -1,5 +1,11 @@
 package Domain;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+
+import java.io.IOException;
 import java.util.Date;
 
 public class Item {
@@ -11,6 +17,7 @@ public class Item {
     private int supplir_dis;
     private double costPrice;
     private double purchase_price;
+    private Product product;
 
     public int getItem_id() {
         return item_id;
@@ -74,5 +81,22 @@ public class Item {
 
     public void setPurchase_price(double purchase_price) {
         this.purchase_price = purchase_price;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(JsonObject product_json) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // Convert JsonObject to JsonNode
+            JsonNode jsonNode = objectMapper.readTree(product_json.toString());
+            // Convert JsonNode to Product
+            Product product = objectMapper.treeToValue(jsonNode, Product.class);
+            this.product = product;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

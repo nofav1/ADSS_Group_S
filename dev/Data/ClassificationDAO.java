@@ -1,8 +1,11 @@
 package Data;
 
+import com.google.gson.JsonObject;
+
+import java.sql.SQLException;
 import java.util.Map;
 
-public class ClassificationDAO implements IDAO{
+public class ClassificationDAO extends ADAO{
     // Singleton instance
     private static ClassificationDAO instance;
 
@@ -29,7 +32,7 @@ public class ClassificationDAO implements IDAO{
     }
 
     @Override
-    public void add(String recordToAdd) {
+    public void add(JsonObject item_json) throws SQLException{
         // Implementation of add method
     }
 
@@ -39,7 +42,7 @@ public class ClassificationDAO implements IDAO{
     }
 
     @Override
-    public String search(int id) {
+    public JsonObject search(int id) {
         // Implementation of search method
         return null; // Replace with actual implementation
     }
