@@ -1,5 +1,6 @@
 package Data;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
 import java.sql.*;
@@ -12,6 +13,7 @@ public class ItemsDAO extends ADAO{
     // Private constructor to prevent instantiation
     private ItemsDAO() {
         // Private constructor to prevent instantiation
+        this.table_name = "Item";
     }
 
     // Method to get the singleton instance
@@ -28,7 +30,9 @@ public class ItemsDAO extends ADAO{
 
     @Override
     public void update(Map<String, Object> fieldsAndValuesConditions, Map<String, Object> fieldsAndValuesToUpdates) {
-        // Implementation of update method
+        super.update(fieldsAndValuesConditions, fieldsAndValuesToUpdates); //update in dataBase
+
+        //TODO: update in cache
     }
 
     @Override
@@ -48,12 +52,12 @@ public class ItemsDAO extends ADAO{
             double purchase_price; //calculate from product table with discount
             int product_number = item_json.get("catalog_number").getAsInt();
 
-            //calculate purchase_price
+            // TODO: calculate purchase_price
             purchase_price = calculatePurchasePrice(product_number);
 
             // Set parameters for the prepared statement
             preparedStatement.setInt(1, item_id);
-            preparedStatement.setDate(2, Date.valueOf(expiring_date));
+            preparedStatement.setString(2, expiring_date);
             preparedStatement.setString(3, section);
             preparedStatement.setInt(4, location);
             preparedStatement.setBoolean(5, isDefect);
@@ -64,6 +68,8 @@ public class ItemsDAO extends ADAO{
 
             preparedStatement.executeUpdate();
 
+            // TODO: add to cache
+
         }
         catch (SQLException e) {
             throw new SQLException();
@@ -72,14 +78,58 @@ public class ItemsDAO extends ADAO{
 
     @Override
     public void delete(int id) {
-        // Implementation of delete method
+        String sql = "DELETE FROM Item WHERE item_id = ?";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            // Set parameter for the prepared statement
+            preparedStatement.setInt(1, id);
+
+            preparedStatement.executeUpdate();
+
+            //TODO: remove from cache
+
+        } catch (SQLException e) {
+
+        }
     }
 
     @Override//return null if not exist
              //convert to json
-    public JsonObject search(int id) {
-        // Implementation of search method
-        return null; // Replace with actual implementation
+    public JsonObject search(int id) throws SQLException {
+        String query = "SELECT * FROM Item WHERE item_id = ?";
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            // Set the product_number parameter
+            preparedStatement.setInt(1, id);
+
+            // Execute the query
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                JsonObject jsonObject = new JsonObject();
+                // Process the result set
+                if (resultSet.next()) {
+                    jsonObject.addProperty("item_id", resultSet.getInt("item_id"));
+                    jsonObject.addProperty("expiring_date", resultSet.getString("expiring_date"));
+                    jsonObject.addProperty("section", resultSet.getString("section"));
+                    jsonObject.addProperty("location", resultSet.getString("location"));
+                    jsonObject.addProperty("isDefect", resultSet.getBoolean("isDefect"));
+                    jsonObject.addProperty("supplir_dis", resultSet.getInt("supplir_dis"));
+                    jsonObject.addProperty("costPrice", resultSet.getDouble("costPrice"));
+                    jsonObject.addProperty("purchase_price", resultSet.getDouble("purchase_price"));
+                    jsonObject.addProperty("product_number", resultSet.getInt("product_number"));
+
+                    return jsonObject;
+                }
+
+                return null; // Product not found
+            } catch (Exception e) {
+                throw e;
+            }
+        }
     }
 
     private double calculatePurchasePrice(int product_number){

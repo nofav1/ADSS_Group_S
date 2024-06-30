@@ -6,28 +6,27 @@ import com.google.gson.JsonObject;
 import java.sql.*;
 import java.util.Map;
 
-public class ClassificationDAO extends ADAO{
+public class StoreDiscountDAO extends ADAO{
     // Singleton instance
-    private static ClassificationDAO instance;
+    private static StoreDiscountDAO instance;
 
     // Private constructor to prevent instantiation
-    private ClassificationDAO() {
+    private StoreDiscountDAO() {
         // Private constructor to prevent instantiation
-        this.table_name = "Classification";
+        this.table_name = "StoreDiscount";
     }
 
     // Method to get the singleton instance
-    public static ClassificationDAO getInstance() {
+    public static StoreDiscountDAO getInstance() {
         if (instance == null) {
-            synchronized (ClassificationDAO.class) {
+            synchronized (StoreDiscountDAO.class) {
                 if (instance == null) {
-                    instance = new ClassificationDAO();
+                    instance = new StoreDiscountDAO();
                 }
             }
         }
         return instance;
     }
-
     @Override
     public void update(Map<String, Object> fieldsAndValuesConditions, Map<String, Object> fieldsAndValuesToUpdates) {
         super.update(fieldsAndValuesConditions, fieldsAndValuesToUpdates); //update in dataBase
@@ -36,25 +35,23 @@ public class ClassificationDAO extends ADAO{
     }
 
     @Override
-    public void add(JsonObject json) throws SQLException{
-        String query = "INSERT INTO Classification(catalog_num, category, subcategory, size, product_number) VALUES(?, ?, ?, ?, ?)";
+    public void add(JsonObject json) throws SQLException {
+        String query = "INSERT INTO StoreDiscount(discount_id, start_date, end_date, discount) VALUES(?, ?, ?, ?)";
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(query)){
 
-            int catalog_num = json.get("catalog_num").getAsInt();
-            String category = json.get("category").getAsString();
-            String subcategory = json.get("subcategory").getAsString();
-            int size = json.get("size").getAsInt();
-            int product_number = json.get("product_number").getAsInt();
+            int discount_id = json.get("discount_id").getAsInt();
+            String start_date = json.get("start_date").getAsString();
+            String end_date = json.get("end_date").getAsString();
+            int discount = json.get("discount").getAsInt();
 
 
             // Set parameters for the prepared statement
-            preparedStatement.setInt(1, catalog_num);
-            preparedStatement.setString(2, category);
-            preparedStatement.setString(3, subcategory);
-            preparedStatement.setInt(4, size);
-            preparedStatement.setInt(5, product_number);
+            preparedStatement.setInt(1, discount_id);
+            preparedStatement.setString(2, start_date);
+            preparedStatement.setString(3, end_date);
+            preparedStatement.setInt(4, discount);
 
             preparedStatement.executeUpdate();
 
@@ -68,7 +65,7 @@ public class ClassificationDAO extends ADAO{
 
     @Override
     public void delete(int id) {
-        String sql = "DELETE FROM Classification WHERE catalog_num = ?";
+        String sql = "DELETE FROM StoreDiscount WHERE discount_id = ?";
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -87,7 +84,7 @@ public class ClassificationDAO extends ADAO{
 
     @Override
     public JsonObject search(int id) throws SQLException {
-        String query = "SELECT * FROM Classification WHERE catalog_num = ?";
+        String query = "SELECT * FROM StoreDiscount WHERE discount_id = ?";
         ObjectMapper objectMapper = new ObjectMapper();
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
@@ -101,11 +98,10 @@ public class ClassificationDAO extends ADAO{
                 JsonObject jsonObject = new JsonObject();
                 // Process the result set
                 if (resultSet.next()) {
-                    jsonObject.addProperty("catalog_num", resultSet.getInt("catalog_num"));
-                    jsonObject.addProperty("category", resultSet.getString("category"));
-                    jsonObject.addProperty("subcategory", resultSet.getString("subcategory"));
-                    jsonObject.addProperty("size", resultSet.getInt("size"));
-                    //jsonObject.addProperty("product_number", resultSet.getInt("product_number"));
+                    jsonObject.addProperty("discount_id", resultSet.getInt("discount_id"));
+                    jsonObject.addProperty("start_date", resultSet.getString("start_date"));
+                    jsonObject.addProperty("end_date", resultSet.getString("end_date"));
+                    jsonObject.addProperty("discount", resultSet.getDouble("discount"));
 
                     return jsonObject;
                 }

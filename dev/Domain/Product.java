@@ -3,7 +3,7 @@ package Domain;
 import com.google.gson.Gson;
 
 public class Product {
-    private int pn; // Product number
+    private int product_number; // Product number
     private String name;
     private int demand;
     private int supplyTime;
@@ -14,15 +14,15 @@ public class Product {
     private StoreDiscount storeDiscount;
 
     public Product(int productId) {
-        pn = productId;
+        product_number = productId;
     }
 
     public int getPn() {
-        return pn;
+        return product_number;
     }
 
-    public void setPn(int pn) {
-        this.pn = pn;
+    public void setPn(int product_number) {
+        this.product_number = product_number;
     }
 
     public String getName() {
