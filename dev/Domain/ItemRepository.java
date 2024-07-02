@@ -52,14 +52,14 @@ public class ItemRepository {
                 int supplier_dis = item_json.get("supplier_discount").getAsInt();
                 double costPrice = item_json.get("cost_price").getAsDouble();
                 double purchase_price; //calculate from product table with discount
-                int product_number = item_json.get("catalog_number").getAsInt();
+                int product_number = item_json.get("product_number").getAsInt();
 
                 JsonObject product_json = product_repo.search(product_number);
                 if (product_json != null) { //product exist
 
                     purchase_price = 0; //TODO: calculate the purchase price and update here
 
-                    //TODO: create item in cacha and add to items list
+                    //TODO: create item in cache and add to items list
 
                     /*Item item = new Item();
                     item.setItem_id(item_id);

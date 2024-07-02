@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ClassificationDAO extends ADAO{
@@ -85,6 +87,7 @@ public class ClassificationDAO extends ADAO{
         }
     }
 
+    //search record by primery key (catalog_num)
     @Override
     public JsonObject search(int id) throws SQLException {
         String query = "SELECT * FROM Classification WHERE catalog_num = ?";
@@ -110,10 +113,54 @@ public class ClassificationDAO extends ADAO{
                     return jsonObject;
                 }
 
-                return null; // Product not found
+                return null; // Classification not found
             } catch (Exception e) {
                 throw e;
             }
+        }
+    }
+
+    public List<JsonObject> searchByCategories(List<String> categories) throws SQLException {
+        StringBuilder query = new StringBuilder("SELECT c.catalog_num, c.category, c.subcategory, c.size, i.location " +
+                "FROM Classification c " +
+                "JOIN Product p ON c.product_number = p.product_number " +
+                "JOIN Item i ON p.product_number = i.product_number " +
+                "WHERE ");
+
+        int index = 1;
+        int fieldCount = categories.size();
+
+        for (String category : categories) {
+            query.append("c.category = '").append(category).append("'");
+            if (index < fieldCount) {
+                query.append(" OR ");
+            }
+            index++;
+        }
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
+
+            List<JsonObject> categories_json_array = new ArrayList<>();
+            // Execute the query
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty("catalog_num", resultSet.getInt("catalog_num"));
+                    jsonObject.addProperty("category", resultSet.getString("category"));
+                    jsonObject.addProperty("subcategory", resultSet.getString("subcategory"));
+                    jsonObject.addProperty("size", resultSet.getInt("size"));
+                    jsonObject.addProperty("location", resultSet.getString("location"));
+
+                    categories_json_array.add(jsonObject);
+                }
+                return categories_json_array;
+
+            } catch (Exception e) {
+                throw e;
+            }
+        } catch (Exception e) {
+            throw e;
         }
     }
 }

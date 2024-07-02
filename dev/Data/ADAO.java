@@ -22,15 +22,15 @@ public abstract class ADAO implements IDAO{
             }
             index++;
         }
-
         sql.append(" WHERE ");
 
+        int conditionCount = fieldsAndValuesConditions.size();
         index = 0;
 
         for (String field : fieldsAndValuesConditions.keySet()) {
             sql.append(field).append(" = ?");
-            if (index < fieldCount - 1) {
-                sql.append(", ");
+            if (index < conditionCount - 1) {
+                sql.append(" AND ");
             }
             index++;
         }
@@ -44,10 +44,7 @@ public abstract class ADAO implements IDAO{
             for (Object condition : fieldsAndValuesConditions.values()) {
                 stmt.setObject(index++, condition);
             }
-
             stmt.executeUpdate();
-
-
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

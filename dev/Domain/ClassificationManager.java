@@ -1,12 +1,18 @@
 package Domain;
 
+import com.google.gson.JsonObject;
+
+import java.sql.SQLException;
+import java.util.List;
+
 public class ClassificationManager {
     // Singleton instance
     private static ClassificationManager instance;
+    private static ClassificationRepository classificationRepository;
 
     // Private constructor to prevent instantiation
     private ClassificationManager() {
-        // Private constructor to prevent instantiation
+        classificationRepository = ClassificationRepository.getInstance();
     }
 
     // Method to get the singleton instance
@@ -26,5 +32,11 @@ public class ClassificationManager {
         // Simulating adding classification to manager
         System.out.println("Adding classification to manager: " + classification);
         // Actual implementation to manage or process the classification data
+    }
+
+    // Method to generate inventory report
+    public JsonObject makeInventoryReport(List<String> categories) throws SQLException {
+        JsonObject json = classificationRepository.makeInventoryReport(categories);
+        return json;
     }
 }

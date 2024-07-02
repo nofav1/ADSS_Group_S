@@ -38,6 +38,7 @@ public class ProductsDAO extends ADAO{
     public void update(Map<String, Object> fieldsAndValuesConditions, Map<String, Object> fieldsAndValuesToUpdates) {
         super.update(fieldsAndValuesConditions, fieldsAndValuesToUpdates); //update in dataBase
 
+
         //TODO: update in cache
     }
 

@@ -6,7 +6,9 @@ import com.google.gson.JsonObject;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProductRepository {
     // Singleton instance
@@ -51,9 +53,23 @@ public class ProductRepository {
         //remember to return product class json - with object mapper
     }
 
-    // Method to generate inventory report
-    public List<String> makeInventoryReport(List<String> categories) {
-        // Placeholder for inventory report generation implementation
-        return null;
+    public void incrementProductAmount(JsonObject json_item) throws SQLException {
+        //search for current amount in item's catalog number
+        JsonObject product_json = productsDAO.search(json_item.get("product_number").getAsInt());
+        int curr_amount = product_json.get("currentAmount").getAsInt();
+
+        Map<String, Object> fieldsAndValuesConditions = new HashMap<>(){{put("product_number", json_item.get("product_number").getAsInt());}};
+        Map<String, Object> fieldsAndValuesToUpdates = new HashMap<>(){{put("current_amount", curr_amount+1);}};
+        productsDAO.update(fieldsAndValuesConditions, fieldsAndValuesToUpdates);
+    }
+
+    public void decrementProductAmount(JsonObject json_item) throws SQLException {
+        //search for current amount in item's catalog number
+        JsonObject product_json = productsDAO.search(json_item.get("product_number").getAsInt());
+        int curr_amount = product_json.get("currentAmount").getAsInt();
+
+        Map<String, Object> fieldsAndValuesConditions = new HashMap<>(){{put("product_number", json_item.get("product_number").getAsInt());}};
+        Map<String, Object> fieldsAndValuesToUpdates = new HashMap<>(){{put("current_amount", curr_amount-1);}};
+        productsDAO.update(fieldsAndValuesConditions, fieldsAndValuesToUpdates);
     }
 }

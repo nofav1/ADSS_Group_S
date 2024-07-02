@@ -3,14 +3,13 @@ import Domain.Location;
 import Data.*;
 
 import java.sql.SQLException;
-import java.util.Scanner;
+import java.util.*;
 
 import Domain.SystemFacade;
 import com.google.gson.JsonObject;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
-import java.util.Map;
 
 public class menu {
     public static Scanner scan;
@@ -47,9 +46,19 @@ public class menu {
                     scan.nextLine();
                 }
                 if (choice == 1) { //Inventory Report
-                    generateInventoryReport();
+                    try{
+                        generateInventoryReport();
+                    }catch (Exception e){
+                        System.out.println("Error in generate inventory report");
+                        System.out.println(e.getMessage());
+                    }
                 } else if (choice == 2) { //Defectives Report
-                    generateDefectivesReport();
+                    try{
+                        generateDefectivesReport();
+                    }catch (Exception e){
+                        System.out.println("Error in generate Defectives report");
+                        System.out.println(e.getMessage());
+                    }
                 } else if (choice == 3) { //Back
                     choice = 0;
                 }
@@ -321,8 +330,15 @@ public class menu {
 
     }
 
-    public static void generateInventoryReport(){
+    public static void generateInventoryReport() throws SQLException {
+        System.out.println("Which categories?");
+        String stringCategories = scan.nextLine(); //assume that the user writes the categories in this format: "Cat1 Cat2 Cat3..."
+        List<String> categories = new ArrayList<>(Arrays.asList(stringCategories.split(" ")));
 
+        System.out.println("Inventory Report\n");
+
+        JsonObject categoriesJsonMap = system.makeInventoryReport(categories);
+        printInventoryReport(categoriesJsonMap, categories);
     }
     public static void generateDefectivesReport(){
 
@@ -332,7 +348,7 @@ public class menu {
         JsonObject item_json = getItemDetails();
         system.addItem(item_json);
     }
-    public static void removeItem(){
+    public static void removeItem() throws SQLException {
         System.out.println("Enter item ID: ");
         int itemID = scan.nextInt();
         scan.nextLine();
@@ -351,6 +367,8 @@ public class menu {
         JsonObject item_json = system.showItemDetails(itemID);
         String details = getItemDetails(item_json);
         System.out.println(details);
+
+        //TODO: show rest item details
     }
 
     public static void discountByCategory(){
@@ -402,8 +420,10 @@ public class menu {
 
         //product catalog_num
         System.out.print("Catalog number: ");
-        String catalog_number = scan.nextLine();
-        json.addProperty("catalog_number", catalog_number);
+        String product_number = scan.nextLine();
+        json.addProperty("product_number", product_number);
+
+        //TODO: show rest item details
 
         return json;
 
@@ -424,6 +444,26 @@ public class menu {
         //TODO: add all item details - category and discount and product details..
 
         return details.toString();
+    }
+
+    private static void printInventoryReport(JsonObject categoriesJsonMap, List<String> categories) {
+        for (String category : categories) {
+            if (categoriesJsonMap.has(category)) {
+                System.out.println(category + ":");
+                JsonObject subcategories = categoriesJsonMap.getAsJsonObject(category);
+                for (String subcategory : subcategories.keySet()) {
+                    System.out.println("----" + subcategory + ":");
+                    JsonObject sizes = subcategories.getAsJsonObject(subcategory);
+                    for (String size : sizes.keySet()) {
+                        System.out.println("--------size: " + size);
+                        JsonObject locations = sizes.getAsJsonObject(size);
+                        for (String location : locations.keySet()) {
+                            System.out.println("------------" + location + ": " + locations.get(location).getAsInt());
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public static String getPathFromConfig(){

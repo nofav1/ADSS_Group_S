@@ -10,10 +10,14 @@ public class SystemFacade {
     // Singleton instance
     private static SystemFacade instance;
     private ItemManager item_manager;
+    private ProductManager product_manager;
+    private ClassificationManager classification_manager;
 
     // Private constructor to prevent instantiation
     private SystemFacade() {
         item_manager = ItemManager.getInstance();
+        product_manager = ProductManager.getInstance();
+        classification_manager = ClassificationManager.getInstance();
     }
 
     // Method to get the singleton instance
@@ -29,9 +33,9 @@ public class SystemFacade {
     }
 
     // Method to make inventory report
-    public List<String> makeInventoryReport(List<String> categories) {
-        // Placeholder for inventory report generation implementation
-        return null;
+    public JsonObject makeInventoryReport(List<String> categories) throws SQLException {
+        JsonObject json = classification_manager.makeInventoryReport(categories);
+        return json;
     }
 
     // Method to make defect report
@@ -42,12 +46,15 @@ public class SystemFacade {
 
     // Method to add an item
     public void addItem(JsonObject json_item) throws SQLException {
-        item_manager.addItem(json_item);
+        item_manager.addItem(json_item); //add item in itemDAO + cache
+        product_manager.incrementProductAmount(json_item); //increment by 1
     }
 
     // Method to remove an item
-    public void removeItem(int item_id) {
+    public void removeItem(int item_id) throws SQLException {
+        JsonObject json_item = item_manager.showItemDetails(item_id);
         item_manager.removeItem(item_id);
+        product_manager.decrementProductAmount(json_item); //decrement by 1
     }
 
     // Method to mark an item as defective

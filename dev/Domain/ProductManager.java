@@ -1,15 +1,19 @@
 package Domain;
 
+import com.google.gson.JsonObject;
+
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
 public class ProductManager {
     // Singleton instance
     private static ProductManager instance;
+    private static ProductRepository productRepository;
 
     // Private constructor to prevent instantiation
     private ProductManager() {
-        // Private constructor to prevent instantiation
+        productRepository = ProductRepository.getInstance();
     }
 
     // Method to get the singleton instance
@@ -46,9 +50,11 @@ public class ProductManager {
         return false;
     }
 
-    // Method to generate inventory report
-    public List<String> makeInventoryReport(List<String> categories) {
-        // Placeholder for inventory report generation implementation
-        return null;
+    public void incrementProductAmount(JsonObject json_item) throws SQLException {
+        productRepository.incrementProductAmount(json_item);
+    }
+
+    public void decrementProductAmount(JsonObject json_item) throws SQLException {
+        productRepository.decrementProductAmount(json_item);
     }
 }

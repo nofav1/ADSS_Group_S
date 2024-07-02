@@ -1,5 +1,6 @@
 package Data;
 
+import Domain.Location;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
@@ -46,11 +47,12 @@ public class ItemsDAO extends ADAO{
             String expiring_date = item_json.get("expiring_date").getAsString();
             String section = item_json.get("section").getAsString();
             int location = item_json.get("location").getAsInt();
+            String loc = (location == 0) ? Location.WareHouse.name() : Location.interiorStore.name();
             boolean isDefect = false; //default
             int supplier_dis = item_json.get("supplier_discount").getAsInt();
             double costPrice = item_json.get("cost_price").getAsDouble();
             double purchase_price; //calculate from product table with discount
-            int product_number = item_json.get("catalog_number").getAsInt();
+            int product_number = item_json.get("product_number").getAsInt();
 
             // TODO: calculate purchase_price
             purchase_price = calculatePurchasePrice(product_number);
@@ -59,7 +61,7 @@ public class ItemsDAO extends ADAO{
             preparedStatement.setInt(1, item_id);
             preparedStatement.setString(2, expiring_date);
             preparedStatement.setString(3, section);
-            preparedStatement.setInt(4, location);
+            preparedStatement.setString(4, loc);
             preparedStatement.setBoolean(5, isDefect);
             preparedStatement.setInt(6, supplier_dis);
             preparedStatement.setDouble(7, costPrice);
