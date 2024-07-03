@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ItemsDAO extends ADAO{
@@ -132,6 +134,41 @@ public class ItemsDAO extends ADAO{
                 throw e;
             }
         }
+    }
+
+    public List<JsonObject> getAllDefectiveItems() throws SQLException {
+        String query = "SELECT * FROM Item WHERE isDefect = 1";
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            List<JsonObject> defectives_json_array = new ArrayList<>();
+            // Execute the query
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty("item_id", resultSet.getInt("item_id"));
+                    jsonObject.addProperty("expiring_date", resultSet.getString("expiring_date"));
+                    jsonObject.addProperty("section", resultSet.getString("section"));
+                    jsonObject.addProperty("location", resultSet.getString("location"));
+                    jsonObject.addProperty("supplier_dis", resultSet.getInt("supplier_dis"));
+                    jsonObject.addProperty("costPrice", resultSet.getDouble("costPrice"));
+                    jsonObject.addProperty("purchase_price", resultSet.getDouble("purchase_price"));
+                    jsonObject.addProperty("product_number", resultSet.getInt("product_number"));
+
+                    defectives_json_array.add(jsonObject);
+                }
+                return defectives_json_array;
+
+            } catch (Exception e) {
+                throw e;
+            }
+        }
+        catch (Exception e){
+            throw e;
+        }
+
     }
 
     private double calculatePurchasePrice(int product_number){

@@ -39,16 +39,16 @@ public class ProductManager {
     }
 
     // Method to update discount
-    public void updateDiscount(int discount, Date startDate, Date endDate,
-                               List<String> categories, List<Integer> product_numbers) {
-        // Placeholder for updating discount implementation
+    public void updateDiscount(List<JsonObject> products_json_list, int discount_id) {
+        productRepository.updateDiscount(products_json_list, discount_id);
     }
 
     // Method to search for a product
-    public boolean search(int catalog_num) {
-        // Placeholder for search implementation
-        return false;
+    public JsonObject search(int catalog_num) throws SQLException {
+        return productRepository.search(catalog_num);
     }
+
+
 
     public void incrementProductAmount(JsonObject json_item) throws SQLException {
         productRepository.incrementProductAmount(json_item);

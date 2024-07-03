@@ -13,9 +13,11 @@ public class ClassificationRepository {
     // Singleton instance
     private static ClassificationRepository instance;
     private HashMap<String, HashMap<String, HashMap<String, HashMap<String, Integer>>>> itemAmountMapByCategory; //saves all items amount in format: Map<category, Map<sub-category,Map<size, Map<location, amount>>>> (location- wareHouse(0), interiorStore(1))
+    private ClassificationDAO classificationDAO;
 
     // Private constructor to prevent instantiation
     private ClassificationRepository() {
+        classificationDAO = ClassificationDAO.getInstance();
         itemAmountMapByCategory = new HashMap<>();
     }
 
@@ -40,7 +42,7 @@ public class ClassificationRepository {
 
     // Method to generate inventory report
     public JsonObject makeInventoryReport(List<String> categories) throws SQLException {
-        List<JsonObject> categories_json_list = ClassificationDAO.getInstance().searchByCategories(categories);
+        List<JsonObject> categories_json_list = classificationDAO.searchByCategories(categories);
         updateCategoryMapAmounts(categories);
 
         // Convert the map to JSON and return it
@@ -51,7 +53,7 @@ public class ClassificationRepository {
     //updates items' amount by category - in itemAmountMapByCategory hash map (in the givin categories)
     public void updateCategoryMapAmounts(List<String> categories) throws SQLException {
         // Fetch the categories from the database
-        List<JsonObject> categories_json_list = ClassificationDAO.getInstance().searchByCategories(categories);
+        List<JsonObject> categories_json_list = classificationDAO.searchByCategories(categories);
 
         // Initialize amounts to 0 for the given categories
         for (String category : categories) {
@@ -80,5 +82,11 @@ public class ClassificationRepository {
                     .computeIfAbsent(size, k -> new HashMap<>())
                     .merge(location, 1, Integer::sum);
         }
+    }
+
+    //return a json list that contains all product that belongs to the given category
+    public List<JsonObject> findProductInCategory(String category){
+        Map<String, Object> fieldsAndValuesConditions = new HashMap<>(){{put("category", category);}};
+        return classificationDAO.genericSearch(fieldsAndValuesConditions);
     }
 }

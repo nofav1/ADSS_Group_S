@@ -112,4 +112,24 @@ public class StoreDiscountDAO extends ADAO{
             }
         }
     }
+
+    public int getNextDiscountId() throws SQLException {
+        String query = "SELECT MAX(discount_id) AS max_id FROM StoreDiscount";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("max_id") + 1;
+                } else {
+                    return 1; // Assuming 0 is the starting value if there are no records
+                }
+            } catch (Exception e) {
+                throw e;
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 }

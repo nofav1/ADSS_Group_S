@@ -48,8 +48,12 @@ public class ItemManager {
     }
 
     // Method to generate defect report
-    public List<String> makeDefectReport() {
-        // Placeholder for defect report generation implementation
-        return null;
+    public List<JsonObject> makeDefectReport() throws SQLException {
+        return item_repo.makeDefectReport();
+    }
+
+    //updates purchase price for items that belongs to given products_numbers
+    public void updatePurchasePrice(List<JsonObject> product_json_list, int discount){
+        item_repo.updatePurchasePrice(product_json_list, discount);
     }
 }

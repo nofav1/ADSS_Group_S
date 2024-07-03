@@ -13,7 +13,15 @@ import java.io.InputStream;
 
 public class menu {
     public static Scanner scan;
-    public static SystemFacade system = SystemFacade.getInstance();
+    public static SystemFacade system;
+
+    static {
+        try {
+            system = SystemFacade.getInstance();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static void main(String[] args) {
 
@@ -127,7 +135,6 @@ public class menu {
                             choice = 0;
                             break; //Back
                         }
-
                         switch (choice) {
                             case 1: //Discount by category
                                 try {
@@ -340,8 +347,11 @@ public class menu {
         JsonObject categoriesJsonMap = system.makeInventoryReport(categories);
         printInventoryReport(categoriesJsonMap, categories);
     }
-    public static void generateDefectivesReport(){
+    public static void generateDefectivesReport() throws SQLException {
+        System.out.println("Defective Report");
 
+        List<JsonObject> defectiveItemsJsonMap = system.makeDefectReport();
+        printDefectiveReport(defectiveItemsJsonMap);
     }
 
     public static void addItem() throws SQLException {
@@ -371,7 +381,26 @@ public class menu {
         //TODO: show rest item details
     }
 
-    public static void discountByCategory(){
+    public static void discountByCategory() throws SQLException {
+        JsonObject json = new JsonObject();
+        System.out.print("Which Category? ");
+        String category = scan.nextLine();
+        json.addProperty("category", category);
+
+        System.out.print("Discount: ");
+        int discount = scan.nextInt();
+        scan.nextLine();
+        json.addProperty("discount", discount);
+
+        System.out.print("Start date: ");
+        String s_date = scan.nextLine();
+        json.addProperty("start_date", s_date);
+
+        System.out.print("End date: ");
+        String e_date = scan.nextLine();
+        json.addProperty("end_date", e_date);
+
+        system.updateDiscount(json);
 
     }
     public static void discountByProduct(){
@@ -394,18 +423,10 @@ public class menu {
         char item_section = scan.nextLine().charAt(0);
         json.addProperty("section", item_section);
 
-        System.out.print("Item location:(WareHouse = 0, Interior = 1)");
+        System.out.print("Item location:(WareHouse = 0, Interior = 1): ");
         int item_Loc = scan.nextInt();
         scan.nextLine();
         Location loc = Location.WareHouse;
-        /*if(item_Loc == 0){
-            loc = Location.WareHouse;
-        } else if (item_Loc == 1){
-            loc = Location.Interior;
-        }
-        else {
-            System.out.println("Error");
-        }*/
         json.addProperty("location", item_Loc); //int
 
         System.out.print("Item supplier Discount: ");
@@ -463,6 +484,26 @@ public class menu {
                     }
                 }
             }
+        }
+    }
+
+    private static void printDefectiveReport(List<JsonObject> defectiveItemsJsonMap) {
+        if (defectiveItemsJsonMap == null || defectiveItemsJsonMap.isEmpty()) {
+            System.out.println("No defective items found.");
+            return;
+        }
+
+        int index = 1;
+        for (JsonObject jsonObject : defectiveItemsJsonMap) {
+            System.out.println(index + ". Item: " + jsonObject.get("item_id").getAsInt() +
+                    ", expiring date: " + jsonObject.get("expiring_date").getAsString() +
+                    ", section: " + jsonObject.get("section").getAsString() +
+                    ", location: " + jsonObject.get("location").getAsString() +
+                    ", supplier discount: " + jsonObject.get("supplier_dis").getAsInt() +
+                    ", cost price: " + jsonObject.get("costPrice").getAsDouble() +
+                    ", purchase price: " + jsonObject.get("purchase_price").getAsDouble() +
+                    ", product number: " + jsonObject.get("product_number").getAsInt());
+            index++;
         }
     }
 

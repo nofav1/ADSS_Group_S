@@ -4,8 +4,11 @@ import Data.IDAO;
 import Data.ItemsDAO;
 import com.google.gson.JsonObject;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -14,10 +17,10 @@ public class ItemRepository {
     // Singleton instance
     private static ItemRepository instance;
 
-    private static ProductRepository product_repo;
+    private ProductRepository product_repo;
     private Map<Integer,Item> items;
 
-    private IDAO item_dao;
+    private ItemsDAO item_dao;
 
     // Private constructor to prevent instantiation
     private ItemRepository() {
@@ -121,8 +124,29 @@ public class ItemRepository {
     }
 
     // Method to generate defect report
-    public List<String> makeDefectReport() {
-        // Placeholder for defect report generation implementation
-        return null;
+    public List<JsonObject> makeDefectReport() throws SQLException {
+        return item_dao.getAllDefectiveItems();
+    }
+
+    //updates purchase price for items that belongs to given products_numbers
+    public void updatePurchasePrice(List<JsonObject> product_json_list, int discount){
+        Map<String, Object> fieldsAndValuesConditions = new HashMap<>();
+        List<JsonObject> item_json_list = new ArrayList<>();
+        for (JsonObject productJson : product_json_list) {
+            fieldsAndValuesConditions.put("product_number", productJson.get("product_number").getAsInt());
+            item_json_list.addAll(item_dao.genericSearch(fieldsAndValuesConditions));
+        }
+
+        // Update the purchase price for each item in the item_json_list
+        for (JsonObject itemJson : item_json_list) {
+            Map<String, Object> updateConditions = new HashMap<>() {{
+                put("item_id", itemJson.get("item_id").getAsInt());
+            }};
+            double discountedPrice = itemJson.get("costPrice").getAsDouble() * (1 - discount / 100.0);
+            Map<String, Object> updateValues = new HashMap<>() {{
+                put("purchase_price", BigDecimal.valueOf(discountedPrice).setScale(2, RoundingMode.HALF_UP)); //round 2
+            }};
+            item_dao.update(updateConditions, updateValues);
+        }
     }
 }

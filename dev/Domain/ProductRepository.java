@@ -14,7 +14,7 @@ public class ProductRepository {
     // Singleton instance
     private static ProductRepository instance;
 
-    private static ProductsDAO productsDAO;
+    private ProductsDAO productsDAO;
 
     // Private constructor to prevent instantiation
     private ProductRepository() {
@@ -40,17 +40,23 @@ public class ProductRepository {
     }
 
     // Method to update discount
-    public void updateDiscount(int discount, Date startDate, Date endDate,
-                               List<String> categories, List<Integer> product_numbers) {
-        // Placeholder for updating discount implementation
+    public void updateDiscount(List<JsonObject> products_json_list, int discount_id) {
+        Map<String, Object> fieldsAndValuesToUpdates = new HashMap<>() {{
+            put("discount_id", discount_id);
+        }};
+
+        // Iterate over the products_json_list to update each product individually
+        for (JsonObject json_item : products_json_list) {
+            Map<String, Object> fieldsAndValuesConditions = new HashMap<>() {{
+                put("product_number", json_item.get("product_number").getAsInt());
+            }};
+            productsDAO.update(fieldsAndValuesConditions, fieldsAndValuesToUpdates);
+        }
     }
 
     // Method to search for a product
     public JsonObject search(int catalog_num) throws SQLException {
-        // Placeholder for search implementation
-        JsonObject json = productsDAO.search(catalog_num);
-        return json;
-        //remember to return product class json - with object mapper
+        return productsDAO.search(catalog_num);
     }
 
     public void incrementProductAmount(JsonObject json_item) throws SQLException {
@@ -73,3 +79,4 @@ public class ProductRepository {
         productsDAO.update(fieldsAndValuesConditions, fieldsAndValuesToUpdates);
     }
 }
+

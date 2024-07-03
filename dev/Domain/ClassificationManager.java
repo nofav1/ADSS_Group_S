@@ -3,7 +3,9 @@ package Domain;
 import com.google.gson.JsonObject;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClassificationManager {
     // Singleton instance
@@ -38,5 +40,9 @@ public class ClassificationManager {
     public JsonObject makeInventoryReport(List<String> categories) throws SQLException {
         JsonObject json = classificationRepository.makeInventoryReport(categories);
         return json;
+    }
+
+    public List<JsonObject> findProductInCategory(String category){
+        return classificationRepository.findProductInCategory(category);
     }
 }
