@@ -3,6 +3,8 @@ package Domain;
 import com.google.gson.JsonObject;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SystemFacade {
@@ -68,12 +70,12 @@ public class SystemFacade {
         return item_manager.showItemDetails(item_id);
     }
 
-    // Method to update discount
+    // Method to update discount by category
     //add a discount record in discount table - the new given discount
     //finds all relevent products that belonges to the given category
     //updates discount in the relevent products
     //update purcase price in all relevent items
-    public void updateDiscount(JsonObject json) throws SQLException {
+    public void updateDiscountByCategory(JsonObject json) throws SQLException {
         int discount = json.get("discount").getAsInt();
         int discount_id = storeDiscount_manager.addDiscount(json);
         List<JsonObject> product_list_in_category = classification_manager.findProductInCategory(json.get("category").getAsString());
@@ -81,10 +83,19 @@ public class SystemFacade {
         item_manager.updatePurchasePrice(product_list_in_category, discount);
     }
 
-    /*public void discountByCategory(){
-        //להוסיף רשומה של הנחה חדשה בטבלת הנחות
-        //למצוא את כל המוצרים ששיכיים לקטגוריה הרלוונטית
-        //לעדכן לכל המוצרים את הdiscount_id החדש
-        storeDiscount_manager.addDiscount();
-    }*/
+    //TODO:: to check that this function is works
+
+    // Method to update discount by catalog number
+    //add a discount record in discount table - the new given discount
+    //updates discount in the relevent product
+    //update purcase price in all relevent items
+    public void updateDiscountByCatalogNum(JsonObject json) throws SQLException {
+        int discount = json.get("discount").getAsInt();
+        int discount_id = storeDiscount_manager.addDiscount(json);
+        JsonObject product_json = product_manager.search(json.get("product_number").getAsInt());
+        List<JsonObject> product_json_list = new ArrayList<>(Arrays.asList(product_json));
+        product_manager.updateDiscount(product_json_list, discount_id);
+        item_manager.updatePurchasePrice(product_json_list, discount);
+    }
+
 }

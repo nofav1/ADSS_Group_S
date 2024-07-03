@@ -400,11 +400,29 @@ public class menu {
         String e_date = scan.nextLine();
         json.addProperty("end_date", e_date);
 
-        system.updateDiscount(json);
+        system.updateDiscountByCategory(json);
 
     }
-    public static void discountByProduct(){
+    public static void discountByProduct() throws SQLException {
+        JsonObject json = new JsonObject();
+        System.out.print("Which Catalog number? ");
+        String pn = scan.nextLine();
+        json.addProperty("product_number", pn);
 
+        System.out.print("Discount: ");
+        int discount = scan.nextInt();
+        scan.nextLine();
+        json.addProperty("discount", discount);
+
+        System.out.print("Start date: ");
+        String s_date = scan.nextLine();
+        json.addProperty("start_date", s_date);
+
+        System.out.print("End date: ");
+        String e_date = scan.nextLine();
+        json.addProperty("end_date", e_date);
+
+        system.updateDiscountByCatalogNum(json);
     }
 
     public static JsonObject getItemDetails(){ //get all product details from user
@@ -524,7 +542,6 @@ public class menu {
             e.printStackTrace();
         }
         return path;
-
     }
 
 }
