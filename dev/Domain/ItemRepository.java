@@ -2,6 +2,7 @@ package Domain;
 
 import Data.IDAO;
 import Data.ItemsDAO;
+import Data.StoreDiscountDAO;
 import com.google.gson.JsonObject;
 
 import java.math.BigDecimal;
@@ -57,10 +58,20 @@ public class ItemRepository {
                 double purchase_price; //calculate from product table with discount
                 int product_number = item_json.get("product_number").getAsInt();
 
+                //find store discount from product
+                JsonObject product_object = product_repo.search(product_number);
+                int discount_id = product_object.get("discount_id").getAsInt();
+                JsonObject discount_json = StoreDiscountDAO.getInstance().search(discount_id);
+                int store_discount = discount_json.get("discount").getAsInt();
+
+
                 JsonObject product_json = product_repo.search(product_number);
                 if (product_json != null) { //product exist
 
-                    purchase_price = 0; //TODO: calculate the purchase price and update here
+                    purchase_price = costPrice * (100 - store_discount) / 100;
+                    BigDecimal bd = new BigDecimal(purchase_price).setScale(2, RoundingMode.HALF_UP);
+                    double roundedPurchasePrice = bd.doubleValue();
+                    item_json.addProperty("purchase_price", roundedPurchasePrice); //add purchase price (round by 2)
 
                     //TODO: create item in cache and add to items list
 
@@ -100,10 +111,25 @@ public class ItemRepository {
     }
 
     // Method to mark an item as defective
-    public void markAsDefect(int item_id) {
-        Map<String, Object> fieldsAndValuesConditions = new HashMap<>(){{put("item_id", item_id);}};
-        Map<String, Object> fieldsAndValuesToUpdate = new HashMap<>(){{put("isDefect", true);}};
-        item_dao.update(fieldsAndValuesConditions, fieldsAndValuesToUpdate);
+    public void markAsDefect(int item_id) throws Exception {
+        try {
+            //check if item exist
+            if (item_dao.search(item_id) != null) {
+                Map<String, Object> fieldsAndValuesConditions = new HashMap<>() {{
+                    put("item_id", item_id);
+                }};
+                Map<String, Object> fieldsAndValuesToUpdate = new HashMap<>() {{
+                    put("isDefect", true);
+                }};
+                item_dao.update(fieldsAndValuesConditions, fieldsAndValuesToUpdate);
+            }
+            else{
+                throw new Exception("Item was not found");
+            }
+        }
+        catch (Exception e){
+            throw e;
+        }
     }
 
     // Method to show item details

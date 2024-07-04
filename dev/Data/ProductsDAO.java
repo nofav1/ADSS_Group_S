@@ -38,8 +38,7 @@ public class ProductsDAO extends ADAO{
     public void update(Map<String, Object> fieldsAndValuesConditions, Map<String, Object> fieldsAndValuesToUpdates) {
         super.update(fieldsAndValuesConditions, fieldsAndValuesToUpdates); //update in dataBase
 
-
-        //TODO: update in cache
+        // TODO: update in cache
     }
 
     @Override
@@ -116,15 +115,14 @@ public class ProductsDAO extends ADAO{
                     jsonObject.addProperty("product_number", resultSet.getInt("product_number"));
                     jsonObject.addProperty("name", resultSet.getString("name"));
                     jsonObject.addProperty("demand", resultSet.getInt("demand"));
-                    jsonObject.addProperty("supplyTime", resultSet.getInt("supply_time"));
-                    jsonObject.addProperty("minAmountForAlert", resultSet.getInt("min_amount_for_alert"));
+                    jsonObject.addProperty("supply_time", resultSet.getInt("supply_time"));
+                    jsonObject.addProperty("min_amount_for_alert", resultSet.getInt("min_amount_for_alert"));
                     jsonObject.addProperty("manufacturer", resultSet.getString("manufacturer"));
-                    jsonObject.addProperty("currentAmount", resultSet.getInt("current_amount"));
+                    jsonObject.addProperty("current_amount", resultSet.getInt("current_amount"));
                     jsonObject.addProperty("discount_id", resultSet.getInt("discount_id"));
 
                     return jsonObject;
                 }
-
                 return null; // Product not found
             } catch (Exception e) {
                 throw e;

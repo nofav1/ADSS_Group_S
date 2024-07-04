@@ -1,7 +1,11 @@
 package Data;
 
+import Presentation.menu;
 import com.google.gson.JsonObject;
+import org.sqlite.core.DB;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,8 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class ADAO implements IDAO{
-    protected static String DB_URL = "jdbc:sqlite:ADSS_Group_S/dev/DataBase";
+    protected static String DB_URL;
     protected String table_name;
+
+    public ADAO() {
+        DB_URL = getDataBasePathFromConfig();
+    }
 
     public void update(Map<String, Object> fieldsAndValuesConditions, Map<String, Object> fieldsAndValuesToUpdates) {
         StringBuilder sql = new StringBuilder("UPDATE " + table_name + " SET ");
@@ -102,7 +110,25 @@ public abstract class ADAO implements IDAO{
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         return results;
+    }
+
+    public static String getDataBasePathFromConfig(){
+        Yaml yaml = new Yaml();
+        String path = "";
+        try (InputStream inputStream = menu.class.getClassLoader().getResourceAsStream("config.yaml")) {
+            if (inputStream == null) {
+                throw new IllegalArgumentException("file not found! " + "config.yaml");
+            } else {
+                // Parse the YAML file
+                Map<String, Object> config = yaml.load(inputStream);
+                // Access the 'path' value
+                path = (String) config.get("path");
+                return path;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return path;
     }
 }

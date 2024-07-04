@@ -34,18 +34,8 @@ public class StoreDiscountManager {
         return storeDiscountRepository.addDiscount(discount_json);
     }
 
-    // Method to remove a Discount
-    public void removeDiscount(int discount_id) {
-        // Placeholder for removing product implementation
-    }
-
-    /*// Method to update discount
-    public void updateDiscount(int discount_id) {
-        storeDiscountRepository.updateDiscount(discount_id);
-    }*/
-
     // Method to search for a Discount
     public JsonObject search(int discount_id) throws SQLException {
-        return null;
+        return storeDiscountRepository.search(discount_id);
     }
 }

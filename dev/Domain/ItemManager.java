@@ -38,7 +38,7 @@ public class ItemManager {
     }
 
     // Method to mark an item as defective
-    public void markAsDefect(int item_id) {
+    public void markAsDefect(int item_id) throws Exception {
         item_repo.markAsDefect(item_id);
     }
 

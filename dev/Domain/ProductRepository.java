@@ -36,7 +36,7 @@ public class ProductRepository {
 
     // Method to add a product
     public void addProduct(String product) {
-        // Placeholder for adding product implementation
+        //TODO:: implement
     }
 
     // Method to update discount
@@ -62,7 +62,7 @@ public class ProductRepository {
     public void incrementProductAmount(JsonObject json_item) throws SQLException {
         //search for current amount in item's catalog number
         JsonObject product_json = productsDAO.search(json_item.get("product_number").getAsInt());
-        int curr_amount = product_json.get("currentAmount").getAsInt();
+        int curr_amount = product_json.get("current_amount").getAsInt();
 
         Map<String, Object> fieldsAndValuesConditions = new HashMap<>(){{put("product_number", json_item.get("product_number").getAsInt());}};
         Map<String, Object> fieldsAndValuesToUpdates = new HashMap<>(){{put("current_amount", curr_amount+1);}};
@@ -72,11 +72,21 @@ public class ProductRepository {
     public void decrementProductAmount(JsonObject json_item) throws SQLException {
         //search for current amount in item's catalog number
         JsonObject product_json = productsDAO.search(json_item.get("product_number").getAsInt());
-        int curr_amount = product_json.get("currentAmount").getAsInt();
+        int curr_amount = product_json.get("current_amount").getAsInt();
 
         Map<String, Object> fieldsAndValuesConditions = new HashMap<>(){{put("product_number", json_item.get("product_number").getAsInt());}};
         Map<String, Object> fieldsAndValuesToUpdates = new HashMap<>(){{put("current_amount", curr_amount-1);}};
         productsDAO.update(fieldsAndValuesConditions, fieldsAndValuesToUpdates);
+    }
+
+    public boolean checkForAmountAlert(JsonObject product_json) throws SQLException {
+        int min_amount_for_alert = product_json.get("min_amount_for_alert").getAsInt();
+        int current_amount = product_json.get("current_amount").getAsInt();
+
+        if(current_amount < min_amount_for_alert){ //alert!!
+            return true;
+        }
+        return false;
     }
 }
 

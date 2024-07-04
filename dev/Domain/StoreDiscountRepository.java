@@ -39,15 +39,8 @@ public class StoreDiscountRepository {
         return nextDiscountId-1;
     }
 
-    // Method to update discount
-    /*public void updateDiscount(JsonObject list_) {
-        Map<String, Object> fieldsAndValuesConditions = new HashMap<>(){{put("discount_id", discount_id);}};
-        Map<String, Object> fieldsAndValuesToUpdate = new HashMap<>(){{put("discount", true);}};
-        storeDiscountDAO.update(fieldsAndValuesConditions, fieldsAndValuesToUpdate);
-    }*/
-
     // Method to search for a discount
     public JsonObject search(int discount_id) throws SQLException {
-        return null;
+        return storeDiscountDAO.search(discount_id);
     }
 }

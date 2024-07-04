@@ -53,11 +53,8 @@ public class ItemsDAO extends ADAO{
             boolean isDefect = false; //default
             int supplier_dis = item_json.get("supplier_discount").getAsInt();
             double costPrice = item_json.get("cost_price").getAsDouble();
-            double purchase_price; //calculate from product table with discount
+            double purchase_price = item_json.get("purchase_price").getAsDouble();
             int product_number = item_json.get("product_number").getAsInt();
-
-            // TODO: calculate purchase_price
-            purchase_price = calculatePurchasePrice(product_number);
 
             // Set parameters for the prepared statement
             preparedStatement.setInt(1, item_id);
@@ -99,8 +96,7 @@ public class ItemsDAO extends ADAO{
         }
     }
 
-    @Override//return null if not exist
-             //convert to json
+    @Override //return null if not exist
     public JsonObject search(int id) throws SQLException {
         String query = "SELECT * FROM Item WHERE item_id = ?";
         ObjectMapper objectMapper = new ObjectMapper();
@@ -128,7 +124,6 @@ public class ItemsDAO extends ADAO{
 
                     return jsonObject;
                 }
-
                 return null; // Product not found
             } catch (Exception e) {
                 throw e;
@@ -171,7 +166,4 @@ public class ItemsDAO extends ADAO{
 
     }
 
-    private double calculatePurchasePrice(int product_number){
-        return 0;
-    }
 }

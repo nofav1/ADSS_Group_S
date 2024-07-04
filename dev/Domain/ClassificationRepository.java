@@ -35,9 +35,7 @@ public class ClassificationRepository {
 
     // Method to add classification
     public void addClassification(String classification) {
-        // Simulating adding classification to repository
-        System.out.println("Adding classification: " + classification);
-        // Actual implementation to store or process the classification data
+        //TODO:: implement
     }
 
     // Method to generate inventory report
@@ -88,5 +86,10 @@ public class ClassificationRepository {
     public List<JsonObject> findProductInCategory(String category){
         Map<String, Object> fieldsAndValuesConditions = new HashMap<>(){{put("category", category);}};
         return classificationDAO.genericSearch(fieldsAndValuesConditions);
+    }
+
+    // Method to search for a classification
+    public JsonObject search(int catalog_num) throws SQLException {
+        return classificationDAO.search(catalog_num);
     }
 }

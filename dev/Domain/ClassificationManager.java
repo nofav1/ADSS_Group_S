@@ -31,9 +31,7 @@ public class ClassificationManager {
 
     // Method to add classification
     public void addClassification(String classification) {
-        // Simulating adding classification to manager
-        System.out.println("Adding classification to manager: " + classification);
-        // Actual implementation to manage or process the classification data
+        //TODO:: implement
     }
 
     // Method to generate inventory report
@@ -44,5 +42,10 @@ public class ClassificationManager {
 
     public List<JsonObject> findProductInCategory(String category){
         return classificationRepository.findProductInCategory(category);
+    }
+
+    // Method to search for a classification
+    public JsonObject search(int catalog_num) throws SQLException {
+        return classificationRepository.search(catalog_num);
     }
 }

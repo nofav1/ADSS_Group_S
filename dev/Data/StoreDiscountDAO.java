@@ -105,7 +105,6 @@ public class StoreDiscountDAO extends ADAO{
 
                     return jsonObject;
                 }
-
                 return null; // Product not found
             } catch (Exception e) {
                 throw e;

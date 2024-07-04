@@ -1,1 +1,1 @@
-path: "dataBase.csv"
+path: "jdbc:sqlite:ADSS_Group_S/dev/DataBase"

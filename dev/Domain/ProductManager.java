@@ -30,12 +30,12 @@ public class ProductManager {
 
     // Method to add a product
     public void addProduct(String product) {
-        // Placeholder for adding product implementation
+        //TODO:: implement
     }
 
     // Method to remove a product
     public void removeProduct(int product_id) {
-        // Placeholder for removing product implementation
+        //TODO:: implement
     }
 
     // Method to update discount
@@ -48,13 +48,15 @@ public class ProductManager {
         return productRepository.search(catalog_num);
     }
 
-
-
     public void incrementProductAmount(JsonObject json_item) throws SQLException {
         productRepository.incrementProductAmount(json_item);
     }
 
     public void decrementProductAmount(JsonObject json_item) throws SQLException {
         productRepository.decrementProductAmount(json_item);
+    }
+
+    public boolean checkForAmountAlert(JsonObject product_json) throws SQLException {
+        return productRepository.checkForAmountAlert(product_json);
     }
 }
