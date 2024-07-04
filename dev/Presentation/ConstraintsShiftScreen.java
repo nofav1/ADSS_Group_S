@@ -32,13 +32,18 @@ public class ConstraintsShiftScreen {
         choice = sc.nextInt();
         switch (choice) {
             case 1:
-                ac.getCurrentShift().addConstraint(cr.createConstraint(wc.getCurrWorker(), "Morning", shiftDate));
+//                ac.getCurrentShift().addConstraint(cr.createConstraint(wc.getCurrWorker(), "Morning", shiftDate));
+                ac.addConstraintToShift(ac.getCurrentShift(), cr.createConstraint(wc.getCurrWorker(), "Morning", shiftDate));
                 break;
             case 2:
-                ac.getCurrentShift().addConstraint(cr.createConstraint(wc.getCurrWorker(), "Evening", shiftDate));
+//                ac.getCurrentShift().addConstraint(cr.createConstraint(wc.getCurrWorker(), "Evening", shiftDate));
+                ac.addConstraintToShift(ac.getCurrentShift(), cr.createConstraint(wc.getCurrWorker(), "Evening", shiftDate));
+
                 break;
             case 3:
-                ac.getCurrentShift().addConstraint(cr.createConstraint(wc.getCurrWorker(), "Double", shiftDate));
+//                ac.getCurrentShift().addConstraint(cr.createConstraint(wc.getCurrWorker(), "Double", shiftDate));
+                ac.addConstraintToShift(ac.getCurrentShift(), cr.createConstraint(wc.getCurrWorker(), "Double", shiftDate));
+
                 break;
             case 4:
                 break;

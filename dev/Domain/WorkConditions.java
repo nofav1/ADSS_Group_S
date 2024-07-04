@@ -1,5 +1,7 @@
 package Domain;
 
+import com.google.gson.Gson;
+
 public class WorkConditions {
     String startDate;
     String directManager;
@@ -8,12 +10,22 @@ public class WorkConditions {
 
 
     // Constructor
-    public WorkConditions( String startDate, String directManager, String workType, double salary) {
-        // TODO: CHANGE IT
+    public WorkConditions(String startDate, String directManager, String workType, double salary) {
         this.startDate = startDate;
         this.directManager = directManager;
         this.workType = workType;
         this.salary = salary;
+    }
+
+    public WorkConditions(String workConditions) {
+        // Conversion
+        Gson gson = new Gson();
+        WorkConditions workCondition = gson.fromJson(workConditions, WorkConditions.class);
+        // INIT THIS.values
+        this.startDate = workCondition.getStartDate();
+        this.directManager = workCondition.getDirectManager();
+        this.workType = workCondition.getWorkType();
+        this.salary = workCondition.getSalary();
     }
 
     // Getters & Setters
@@ -39,6 +51,25 @@ public class WorkConditions {
 
     public void setSalary(double salary) {
         this.salary = salary;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    // Convert to JSON string
+    public String conditionsToJSON() {
+        String result;
+
+        // Conversion
+        Gson gson = new Gson();
+        result = gson.toJson(this);
+
+        return result;
     }
 
 

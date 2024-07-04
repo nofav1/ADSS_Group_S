@@ -1,15 +1,18 @@
 package Domain;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class Arrangement {
-    private Worker manager;
-
-    // TODO : Dates in shifts already.  Data duplication .
     private String startDate;
     private String endDate;
+    private String managerID;
     private List<Shift> weeklyShifts;
 
     // Constructor
@@ -42,9 +45,30 @@ public class Arrangement {
 
     }
 
+    // Copy Ctr
+    public Arrangement(String startDate, String endDate, String managerID, String weeklyShifts) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.managerID = managerID;
+
+        // Conversion of Json to Shifts
+        Gson gson = new Gson();
+        Type sType = new TypeToken<List<Shift>>() {
+        }.getType();
+        // Convert Json String to List<Shift>
+        this.weeklyShifts = gson.fromJson(weeklyShifts, sType);
+
+    }
+
+    // make shifts list into json string -- > for DB.
+    public String shiftsToJson() {
+        Gson gson = new Gson();
+        return gson.toJson(weeklyShifts);
+    }
+
     // Getters //
-    public Worker getManager() {
-        return manager;
+    public String getManager() {
+        return managerID;
     }
 
     public String getStartDate() {
@@ -59,9 +83,6 @@ public class Arrangement {
         return weeklyShifts;
     }
 
-    public Shift select(int id) {
-        return weeklyShifts.get(id);
-    }
 
     // equals by same type and dates range.(Only 1 arrangement for each week.)
     @Override
@@ -137,5 +158,17 @@ public class Arrangement {
             stringBuilder.append("-").append(weeklyShift.toString());
         }
         return stringBuilder.toString();
+    }
+
+    // Return today's shift by date
+    public Shift getTodayShift() {
+        SystemDate systemDate = new SystemDate(new Date());
+        Shift result = null;
+        for (Shift weeklyShift : weeklyShifts) {
+            if (systemDate.getDateString().equals(weeklyShift.getShiftDate())) {
+                result = weeklyShift;
+            }
+        }
+        return result;
     }
 }

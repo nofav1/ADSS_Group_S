@@ -69,8 +69,7 @@ public class ArrangementShiftScreen {
             // idx =0 show --> 1) ... , idx=1 --->2)... , and so on...
             stringBuilder.append(idx + 1).append(") ").append("Shift Type:").append(ac.getConstraintType(id))
                     .append(", Name: ").append(wc.getWorker(id).getName())
-                    .append(", Roles:");
-            ac.getRolesString(wc.getWorker(id).getRoles(), stringBuilder);
+                    .append(", Role:").append(wc.getWorker(id).getRole());
             stringBuilder.append("\n");
             idx++;
         }
@@ -81,6 +80,8 @@ public class ArrangementShiftScreen {
         if (isManager) ac.getCurrentShift().setShiftManager(wc.getWorker(workersID.get(choice - 1)));
         // Always add the worker to the shift workers list.
         ac.getCurrentShift().addWorker(wc.getWorker(workersID.get(choice - 1)));
+        // Update DB
+        ac.updateArrangement(ac.getCurrArrangement());
     }
 
     private boolean isThereManager() {

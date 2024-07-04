@@ -34,25 +34,11 @@ public class RoleScreen {
                     // Delete Role
                     System.out.println("Enter Role Name");
                     roleName = scanner.next();
-                    if (rc.getRole(roleName) != null)
+                    if (rc.getRoles().containsKey(roleName))
                         rc.deleteRole(roleName);
                     else System.out.println("Role does not exist");
                     // delete the specific role from db.
                     break;
- /*    MODIFYING CANT DO's            case 3:
-                    // Modify Role Cant DO's.
-                    System.out.println("Enter Existing Role Name");
-                    roleName = scanner.next();
-                    if (rc.getRole(roleName) != null) {
-                        System.out.println("Enter a role that, " + roleName + "cant do:");
-                        String cantDo = scanner.next();
-                        if (rc.getRole(cantDo) != null)
-                            rc.getRole(roleName).addCantDo(rc.getRole(cantDo));
-                        else System.out.println("Role does not exist");
-                    } else System.out.println("Role does not exist");
-
-                    // delete the specific role from db.
-                    break;*/
                 case 3:
                     break;
                 default:

@@ -12,6 +12,7 @@ public class CreateWorkerScreen {
     public CreateWorkerScreen() {
         workerController = new WorkerController();
         roleController = new RoleController();
+        // Create worker
         createProcess();
     }
 
@@ -39,13 +40,15 @@ public class CreateWorkerScreen {
         System.out.println("Bank Account:");
         String bankAccount = scanner.next();
         String role = null;
-        while (roleController.getRole(role) == null) {
+        boolean res = false;
+        while (!res) {
             System.out.println("Role:");
             role = scanner.next();
-            if (roleController.getRole(role) == null) System.out.println("Role not found. Try again.");
+            res = roleController.getRoles().containsKey(role);
+            if (!res) System.out.println("Role not found. Try again.");
         }
         String password = "";
-        System.out.println("dev.Presentation.Main branch:");
+        System.out.println("Main branch:");
         String branch = scanner.next();
 
 
@@ -61,7 +64,9 @@ public class CreateWorkerScreen {
         }
         System.out.println("Salary:");
         double salary = scanner.nextDouble();
-        workerController.createWorker(id, name, bankAccount, today, director, workType, salary, roleController.getRole(role), password, branch);
+
+        // Create the worker through the controller
+        workerController.createWorker(id, name, bankAccount, today, director, workType, salary, roleController.getRoles().get(role), password, branch);
 
     }
 

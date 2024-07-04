@@ -1,6 +1,9 @@
 package DataAccess;
 
 import Domain.Constraint;
+import Domain.Role;
+import Domain.WorkConditions;
+import Domain.Worker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,12 +12,19 @@ import java.util.List;
 public class ConstraintDao implements Dao<Constraint> {
     private final HashMap<String, List<Constraint>> constraints = new HashMap<>();
     private final static ConstraintDao instance = new ConstraintDao();
+    Database db;
 
     public static ConstraintDao getInstance() {
         return instance;
 
     }
 
+    private ConstraintDao() {
+            // MANAGER user.
+            db = Database.getInstance();
+
+            getAll();   // update workers map
+    }
     public HashMap<String, List<Constraint>> getConstraints() {
         return constraints;
     }
@@ -23,7 +33,7 @@ public class ConstraintDao implements Dao<Constraint> {
     @Override
     public HashMap<String, Constraint> getAll() {
         // result looks like this:
-        // { Date:Constraint }
+        // { Date:Constraints List }
         HashMap<String, Constraint> res = new HashMap<>();
         for (List<Constraint> value : constraints.values()) {
             for (Constraint constraint : value) {

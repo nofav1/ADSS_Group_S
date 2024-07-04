@@ -7,7 +7,7 @@ public class Worker {
     private String name;
     private String bankAccount;
     private WorkConditions workConditions;
-    private ArrayList<Role> roles;
+    private Role role;
     private String password;
     private String branch;
     private boolean isManager;
@@ -15,12 +15,11 @@ public class Worker {
 
     //Constructor
     public Worker(String ID, String name, String bankAccount, WorkConditions workConditions, Role role, String password, String branch) {
-        roles=new ArrayList<>();
         this.ID = ID;
         this.name = name;
         this.bankAccount = bankAccount;
         this.workConditions = workConditions;
-        this.roles.add(role);
+        this.role = role;
         this.password = password;
         this.branch = branch;
 
@@ -55,12 +54,12 @@ public class Worker {
         this.workConditions = workConditions;
     }
 
-    public ArrayList<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(ArrayList<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getPassword() {
@@ -101,26 +100,17 @@ public class Worker {
 // Other methods...
 
     // Add New Role To Worker
-    public void addRole(Role role) {
+    public void updateRole(Role role) {
         // Each role only once.
-        if (role != null && !roles.contains(role)) this.roles.add(role);
+        if (role != null) this.role = role;
     }
 
-    // Removes Existing Role To Worker
-    public void removeRole(Role role) {
-        if (role != null && roles.contains(role)) {
-            this.roles.remove(role);
-        }
-    }
 
     @Override
     public String toString() {
         StringBuilder res = new StringBuilder();
-        res.append("Worker: " + name );
-        res.append(" Roles: ");
-        for (Role role : roles) {
-            res.append(role + "\n");
-        }
+        res.append("Worker: " + name);
+        res.append(" Role: " + role);
         return res.toString();
     }
 
@@ -128,6 +118,6 @@ public class Worker {
     @Override
     public boolean equals(Object obj) {
         if (obj == null || !(obj instanceof Worker workerObj)) return false;
-        return this.ID == ((Worker) workerObj).ID;
+        return this.ID.equals(workerObj.ID);
     }
 }

@@ -39,9 +39,12 @@ public class RoleController implements IController {
         if (name == null) return null;
         Role result = null;
         for (int i = 0; i < roleDao.getAll().size(); i++) {
-            Role role = (Role) roleDao.getAll().get(String.valueOf(i));
+
+            Role role = (Role) roleDao.getAll().get(i);
+            if (role==null) continue;
             if (role.getName().equals(name)) {
                 result = role;
+                break;
             }
         }
         return result;

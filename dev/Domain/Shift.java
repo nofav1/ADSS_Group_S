@@ -1,17 +1,22 @@
 package Domain;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Shift {
     // enum of shiftType
-    public String[] shiftTypes = {"Morning", "Evening"};
-
+    private String shiftDate;
     private List<Constraint> constraints;
     private List<Worker> workers;
     private Worker shiftManager, shiftManagerEvening;
     private boolean isActive;
-    private String shiftDate;
+
+    static public String[] shiftTypes = {"Morning", "Evening"};
+
 
     // Constructor
     public Shift(String shiftDate) {
@@ -20,19 +25,35 @@ public class Shift {
         this.workers = new ArrayList<>();
 
         this.shiftDate = shiftDate;
-        // shift not
+        // No managers at start
         this.shiftManager = null;
         this.shiftManagerEvening = null;
+
         //  shift not active at first.
         this.isActive = false;
     }
 
+    // Copy ctr
+    public Shift(String date, String managerID, String eveningManagerID, boolean isActive, String workers, String constraints) {
+        this.shiftDate = date;
+        this.isActive = isActive;
+        // TODO: CHANGE IT!
+//        this.shiftManager = managerID;
+//        this.eveningManagerID = eveningManagerID;
+
+        // Convert json to List
+        Gson gson = new Gson();
+        Type wType = new TypeToken<List<Worker>>() {}.getType();
+        Type cType = new TypeToken<List<Constraint>>() {}.getType();
+        List<Worker> workersFromJson = gson.fromJson(workers, wType);
+        List<Constraint> constraintsFromJson = gson.fromJson(workers, cType);
+
+        this.workers = workersFromJson;
+        this.constraints = constraintsFromJson;
+    }
+
     // Getters & Setters
 
-
-    public void setShiftDate(String shiftDate) {
-        this.shiftDate = shiftDate;
-    }
 
     public List<Constraint> getConstraints() {
         return constraints;
@@ -45,9 +66,9 @@ public class Shift {
     public void setShiftManager(Worker shiftManager) {
         for (Constraint constraint : constraints) {
             Worker currWorker = constraint.getCurrWorker();
-            if (shiftManager.equals(currWorker))
-                if (constraint.getShiftType().equals("Evening")) this.shiftManagerEvening = currWorker;
-                else this.shiftManager = currWorker;
+            if (shiftManager.equals(currWorker)) // worker found in constraints
+                if (constraint.getShiftType().equals("Evening")) this.shiftManagerEvening = currWorker; // evening
+                else this.shiftManager = currWorker; // morning
         }
     }
 
@@ -71,7 +92,8 @@ public class Shift {
     // If a constraint already working, change its constraint to input.
     // If a constraint not working yet in this shift, add it to constraint list.
     public void addConstraint(Constraint constraint) {
-        if (!constraints.contains(constraint))
+        boolean b = constraints.contains(constraint);
+        if (!b)
             constraints.add(constraint);
         else constraints.set(constraints.indexOf(constraint), constraint);
     }

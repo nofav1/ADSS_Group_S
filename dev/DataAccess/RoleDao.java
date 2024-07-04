@@ -2,74 +2,113 @@ package DataAccess;
 
 import Domain.Role;
 
+import java.sql.*;
 import java.util.HashMap;
 
 public class RoleDao implements Dao<Role> {
     private final HashMap<String, Role> allRoles = new HashMap<>();
     private static final RoleDao instance = new RoleDao();
-    private static int idx = 3;
+    private final Database db;
+    private boolean isFirstRun = false;
+
 
     public static RoleDao getInstance() {
         return instance;
     }
 
+    // Constructor
     private RoleDao() {
-        // Assuming there are ALWAYS 3 Roles from beginning.
-        Role cashier = new Role("Cashier");
-        Role driver = new Role("Driver");
-        Role warehouse = new Role("Warehouse");
-        cashier.addCantDo(driver);
-        cashier.addCantDo(warehouse);
-        driver.addCantDo(cashier);
-        driver.addCantDo(warehouse);
-        warehouse.addCantDo(cashier);
-        warehouse.addCantDo(driver);
+        db = Database.getInstance();
+        getAll(); // fetch existing db into hashmap
 
-        // Add them into the DB.
-        allRoles.put("0", cashier);
-        allRoles.put("1", driver);
-        allRoles.put("2", warehouse);
+        if (allRoles.isEmpty()) {
+            isFirstRun = true; // First db init
+            // Assuming there are ALWAYS 3 Roles from beginning.
+            Role cashier = new Role("Cashier");
+            Role driver = new Role("Driver");
+            Role warehouse = new Role("Warehouse");
+
+            // Add them into the DB.
+            save(cashier);
+            save(driver);
+            save(warehouse);
+
+            // update map of roles
+            getAll();
+        }
     }
 
+    // load last state of roles table in DB into the roles HashMap
     @Override
     public HashMap<String, Role> getAll() {
+        String sql = "SELECT * FROM roles";
+        try (Connection conn = db.getmConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                allRoles.put(rs.getString("name"), new Role(rs.getString("name")));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return allRoles;
     }
 
     @Override
     public void save(Role role) {
-        allRoles.put(String.valueOf(idx), role);
-        idx++;
+        String sql = "INSERT INTO roles(name) VALUES(?)";
+        try (Connection conn = db.getmConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, role.getName());
+            pstmt.executeUpdate();
+            getAll(); // update the map
 
+        } catch (SQLException e) {
+            System.out.println("Role already exists. try different name");
+        }
     }
 
     @Override
     public void update(Role role) {
-        for (int i = 0; i < allRoles.size(); i++) {
-            Role otherRole = allRoles.get(String.valueOf(i));
-            String key = String.valueOf(i);
-            if (role.equals(otherRole)) {
-                allRoles.put(key, role);
-                break; // STOP WHEN FOUND&UPDATED.
-            }
+        String sql = "UPDATE roles SET name = ?";
+
+        try (Connection conn = db.getmConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, role.getName());
+        } catch (SQLException e) {
+            System.out.println("Role not found. try different name");
         }
+
+        // update the map
+        getAll();
     }
 
 
     @Override
     public void delete(Role role) {
-        int i = 0;
-        for (Role value : allRoles.values()) {
-            if (value.equals(role)) {
-                allRoles.remove(String.valueOf(i));
+        String sql = "DELETE FROM roles WHERE name = ?";
+
+        try (Connection conn = db.getmConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, role.getName());
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                System.out.println("Role not found. Try a different name.");
+            } else {
+                System.out.println("Role deleted successfully.");
             }
-            i++;
+        } catch (SQLException e) {
+            System.out.println("An error occurred: " + e.getMessage());
         }
-        idx--;
+
+        getAll(); // update the map of roles
     }
+
 
     @Override
     public void addFakeData() {
+        if (!isFirstRun) return; // Build it only once.
         Role role1 = new Role("Role1");
         Role role2 = new Role("Role2");
         Role role3 = new Role("Role3");
@@ -88,6 +127,7 @@ public class RoleDao implements Dao<Role> {
         save(role7);
         save(role8);
         save(role9);
+        isFirstRun = false; // turning off switch.
     }
 
 

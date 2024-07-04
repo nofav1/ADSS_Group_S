@@ -7,7 +7,6 @@ import Domain.Role;
 import Domain.WorkConditions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class WorkerController implements IController {
@@ -44,6 +43,10 @@ public class WorkerController implements IController {
         workersDao.update(worker);
     }
 
+    public void deleteWorker(Worker worker){
+        workersDao.delete(worker);
+    }
+
 
     // get all workers list.
     public List<Worker> getAllWorkers() {
@@ -53,7 +56,7 @@ public class WorkerController implements IController {
 
     // get Active Workers ONLY.
     public List<Worker> getAllActiveWorkers() {
-        List<Worker> activeWorkers = new ArrayList<Worker>();
+        List<Worker> activeWorkers = new ArrayList<>();
         for (Worker worker : getAllWorkers()) {
             if (worker.isActive()) activeWorkers.add(worker);
         }

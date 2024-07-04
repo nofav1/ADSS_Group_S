@@ -57,6 +57,7 @@ public class ArrangementController implements IController {
                 // Traversed it all, and no arrangement found? Create new one.
                 result = new Arrangement();
                 // Save it in DB
+                arrangementDao.save(result); // save next week arrangement into DB
                 arrangementDao.getAll().put(result.getStartDate(), result);
             }
         }
@@ -135,12 +136,6 @@ public class ArrangementController implements IController {
     }
 
 
-    public void getRolesString(List<Role> roles, StringBuilder stringBuilder) {
-        for (Role role : roles) {
-            stringBuilder.append(role.getName()).append(",");
-        }
-    }
-
     public String allShiftsHistory() {
         StringBuilder res = new StringBuilder();
         for (int i = 0; i < arrangementDao.getAll().size(); i++) {
@@ -159,6 +154,35 @@ public class ArrangementController implements IController {
                 .append("Shift Manager Evening: ").append(shift.getShiftManagerEvening()).append("\nWorkers: \n");
         res.append(shift.workersByShiftString());
         return res.toString();
+    }
+
+    public boolean addConstraintToShift(Shift shift, Constraint constraint) {
+        shift.addConstraint(constraint);  // add the constraint to the shift ( ONLY IF NOT EXISTS, ELSE MODIFY )
+        int idx = 0;
+        // search for the shift index in the arrangement
+        for (Shift currShift : currArrangement.getWeeklyShifts()) {
+            if (currShift.getShiftDate().equals(shift.getShiftDate())) {
+                break;
+            }
+            idx++;
+        }
+        currArrangement.getWeeklyShifts().set(idx, shift); // update the shift
+        arrangementDao.update(currArrangement); // update arrangement in DB
+        return true;
+    }
+
+    public boolean removeConstraintFromShift(Shift shift, Constraint constraint) {
+        int idx = 0;
+        // search for the shift index in the arrangement
+        for (Shift currShift : currArrangement.getWeeklyShifts()) {
+            if (currShift.getShiftDate().equals(shift.getShiftDate())) {
+                break;
+            }
+            idx++;
+        }
+
+        return currArrangement.getWeeklyShifts().get(idx).getConstraints().remove(constraint);
+
     }
 
     @Override
