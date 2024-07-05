@@ -6,8 +6,6 @@ import Data.StoreDiscountDAO;
 import com.google.gson.JsonObject;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,9 +67,9 @@ public class ItemRepository {
                 if (product_json != null) { //product exist
 
                     purchase_price = costPrice * (100 - store_discount) / 100;
-                    BigDecimal bd = new BigDecimal(purchase_price).setScale(2, RoundingMode.HALF_UP);
-                    double roundedPurchasePrice = bd.doubleValue();
-                    item_json.addProperty("purchase_price", roundedPurchasePrice); //add purchase price (round by 2)
+                    String roundedPurchasePrice = String.format("%.2f", purchase_price);
+                    purchase_price = Double.valueOf(roundedPurchasePrice);
+                    item_json.addProperty("purchase_price", purchase_price); //add purchase price (round by 2)
 
                     //TODO: create item in cache and add to items list
 
@@ -169,8 +167,11 @@ public class ItemRepository {
                 put("item_id", itemJson.get("item_id").getAsInt());
             }};
             double discountedPrice = itemJson.get("costPrice").getAsDouble() * (1 - discount / 100.0);
+            String roundedPurchasePrice = String.format("%.2f", discountedPrice);
+            discountedPrice = Double.valueOf(roundedPurchasePrice);
+            double finalDiscountedPrice = discountedPrice;
             Map<String, Object> updateValues = new HashMap<>() {{
-                put("purchase_price", BigDecimal.valueOf(discountedPrice).setScale(2, RoundingMode.HALF_UP)); //round 2
+                put("purchase_price", finalDiscountedPrice); //round 2
             }};
             item_dao.update(updateConditions, updateValues);
         }

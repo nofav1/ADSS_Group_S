@@ -1,15 +1,11 @@
 package Presentation;
 import Domain.Location;
-import Data.*;
 
 import java.sql.SQLException;
 import java.util.*;
 
 import Domain.SystemFacade;
 import com.google.gson.JsonObject;
-import org.yaml.snakeyaml.Yaml;
-
-import java.io.InputStream;
 
 public class menu {
     public static Scanner scan;
@@ -19,7 +15,7 @@ public class menu {
         try {
             system = SystemFacade.getInstance();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
