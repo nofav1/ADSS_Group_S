@@ -1,0 +1,169 @@
+package DataAccess;
+
+import Domain.Location;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public class ItemsDAO extends ADAO{
+    // Singleton instance
+    private static ItemsDAO instance;
+
+    // Private constructor to prevent instantiation
+    private ItemsDAO() {
+        // Private constructor to prevent instantiation
+        this.table_name = "Item";
+    }
+
+    // Method to get the singleton instance
+    public static ItemsDAO getInstance() {
+        if (instance == null) {
+            synchronized (ItemsDAO.class) {
+                if (instance == null) {
+                    instance = new ItemsDAO();
+                }
+            }
+        }
+        return instance;
+    }
+
+    @Override
+    public void update(Map<String, Object> fieldsAndValuesConditions, Map<String, Object> fieldsAndValuesToUpdates) {
+        super.update(fieldsAndValuesConditions, fieldsAndValuesToUpdates); //update in dataBase
+
+        //TODO: update in cache
+    }
+
+    @Override
+    public void add(JsonObject item_json) throws SQLException{
+        String query = "INSERT INTO Item(item_id, expiring_date, section, location, isDefect, supplier_dis, costPrice, purchase_price, product_number) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)){
+
+            int item_id = item_json.get("id").getAsInt();
+            String expiring_date = item_json.get("expiring_date").getAsString();
+            String section = item_json.get("section").getAsString();
+            int location = item_json.get("location").getAsInt();
+            String loc = (location == 0) ? Location.WareHouse.name() : Location.interiorStore.name();
+            boolean isDefect = false; //default
+            int supplier_dis = item_json.get("supplier_discount").getAsInt();
+            double costPrice = item_json.get("cost_price").getAsDouble();
+            double purchase_price = item_json.get("purchase_price").getAsDouble();
+            int product_number = item_json.get("product_number").getAsInt();
+
+            // Set parameters for the prepared statement
+            preparedStatement.setInt(1, item_id);
+            preparedStatement.setString(2, expiring_date);
+            preparedStatement.setString(3, section);
+            preparedStatement.setString(4, loc);
+            preparedStatement.setBoolean(5, isDefect);
+            preparedStatement.setInt(6, supplier_dis);
+            preparedStatement.setDouble(7, costPrice);
+            preparedStatement.setDouble(8, purchase_price);
+            preparedStatement.setInt(9, product_number);
+
+            preparedStatement.executeUpdate();
+
+            // TODO: add to cache
+
+        }
+        catch (SQLException e) {
+            throw new SQLException();
+        }
+    }
+
+    @Override
+    public void delete(int id) {
+        String sql = "DELETE FROM Item WHERE item_id = ?";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            // Set parameter for the prepared statement
+            preparedStatement.setInt(1, id);
+
+            preparedStatement.executeUpdate();
+
+            //TODO: remove from cache
+
+        } catch (SQLException e) {
+
+        }
+    }
+
+    @Override //return null if not exist
+    public JsonObject search(int id) throws SQLException {
+        String query = "SELECT * FROM Item WHERE item_id = ?";
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            // Set the product_number parameter
+            preparedStatement.setInt(1, id);
+
+            // Execute the query
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                JsonObject jsonObject = new JsonObject();
+                // Process the result set
+                if (resultSet.next()) {
+                    jsonObject.addProperty("item_id", resultSet.getInt("item_id"));
+                    jsonObject.addProperty("expiring_date", resultSet.getString("expiring_date"));
+                    jsonObject.addProperty("section", resultSet.getString("section"));
+                    jsonObject.addProperty("location", resultSet.getString("location"));
+                    jsonObject.addProperty("isDefect", resultSet.getBoolean("isDefect"));
+                    jsonObject.addProperty("supplier_dis", resultSet.getInt("supplier_dis"));
+                    jsonObject.addProperty("costPrice", resultSet.getDouble("costPrice"));
+                    jsonObject.addProperty("purchase_price", resultSet.getDouble("purchase_price"));
+                    jsonObject.addProperty("product_number", resultSet.getInt("product_number"));
+
+                    return jsonObject;
+                }
+                return null; // Product not found
+            } catch (Exception e) {
+                throw e;
+            }
+        }
+    }
+
+    public List<JsonObject> getAllDefectiveItems() throws SQLException {
+        String query = "SELECT * FROM Item WHERE isDefect = 1";
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            List<JsonObject> defectives_json_array = new ArrayList<>();
+            // Execute the query
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty("item_id", resultSet.getInt("item_id"));
+                    jsonObject.addProperty("expiring_date", resultSet.getString("expiring_date"));
+                    jsonObject.addProperty("section", resultSet.getString("section"));
+                    jsonObject.addProperty("location", resultSet.getString("location"));
+                    jsonObject.addProperty("supplier_dis", resultSet.getInt("supplier_dis"));
+                    jsonObject.addProperty("costPrice", resultSet.getDouble("costPrice"));
+                    jsonObject.addProperty("purchase_price", resultSet.getDouble("purchase_price"));
+                    jsonObject.addProperty("product_number", resultSet.getInt("product_number"));
+
+                    defectives_json_array.add(jsonObject);
+                }
+                return defectives_json_array;
+
+            } catch (Exception e) {
+                throw e;
+            }
+        }
+        catch (Exception e){
+            throw e;
+        }
+
+    }
+
+}
